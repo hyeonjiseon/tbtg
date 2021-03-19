@@ -199,11 +199,10 @@ else
         end
         
         %hyeonji - 지정 속도
-        [simParams,varargin] = addNewParam(simParams,'cV',48,'constant velocity of vehicles(km/h)','double',fileCfg,varargin{1});
-        if simParams.cV<0
-            error('Error: "simParams.cV" cannot be < 0');
+        [simParams,varargin] = addNewParam(simParams,'rho',100,'Density of vehicles (vehicles/km)','double',fileCfg,varargin{1});
+        if simParams.rho<=0
+            error('Error: "simParams.rho" cannot be <= 0');
         end
-        
     elseif simParams.typeOfScenario==3 % ETSI Highway high speed
         % [roadLength]
         % Length of the road to be simulated (m)

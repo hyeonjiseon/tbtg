@@ -85,7 +85,7 @@ if simParams.typeOfScenario~=2 % Not traffic trace
 %     end
     
     %hyeonji - 속도를 시뮬레이션 시작할 때 일정하게 지정해 주어야 한다.
-    simValues.v = simParams.cV*ones(simValues.maxID,1);
+    simValues.v = simParams.cV;
     
     
     % Time resolution of position update corresponds to the beacon period
