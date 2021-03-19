@@ -137,7 +137,11 @@ else
     
     
     
-    Xvehicle = (~direction).*mod(Xvehicle + v*updateInterval,Xmax) + direction.*mod(Xvehicle - v*updateInterval,Xmax);
+    Xvehicle = (~direction).*mod(Xvehicle + v*updateInterval,Xmax) + direction.*mod(Xvehicle - v*updateInterval,Xmax); 
+    %v에 updateInterval인 0.1을 곱한 값을 더하고 Xmax를 넘지 않으면 그대로, 넘으면 다시 앞쪽으로 돌아가게 함 - hj
+    %updateInterval은 simParams.positionTimeResolution과 같은 값인데 이는 positioning update of the vehicles라고 input parameter table에 나와 있다. - hj
+    %v가 m/s니까 0.1을 곱했다는 건 100ms마다 position update를 했다는 말인가?? - hj
+    
     % if simParams.mco_nVehInterf>0
     %     positionManagement.mco_interfXvehicle = (~positionManagement.mco_interfDirection).*mod(positionManagement.mco_interfXvehicle + positionManagement.mco_interfVvehicle * updateInterval,Xmax) + positionManagement.mco_interfDirection.*mod(positionManagement.mco_interfXvehicle - positionManagement.mco_interfVvehicle*updateInterval,Xmax);
     % end

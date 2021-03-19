@@ -200,13 +200,16 @@ end
 
 % Generate time values of new vehicles entering the scenario
 timeManagement.timeNextPacket(stationManagement.activeIDs(indexNewVehicles)) = timeManagement.timeNow + appParams.averageTbeacon * rand(1,length(indexNewVehicles));
+%기존 vehicle들의 timdNextPacket을 굳이 바꿔줄 필요는 없을 것 같아서 위 코드는 건들지 않겠음 - hj
+
 if appParams.variabilityTbeacon==-1
     timeManagement.generationInterval(stationManagement.activeIDs(indexNewVehicles)) = generationPeriodFromSpeed(simValues.v(indexNewVehicles),appParams);
 else
 %     timeManagement.generationInterval(stationManagement.activeIDs(indexNewVehicles)) = appParams.averageTbeacon - appParams.variabilityTbeacon/2 + appParams.variabilityTbeacon*rand(length(indexNewVehicles),1);
 %     timeManagement.generationInterval(stationManagement.activeIDsLTE) = appParams.averageTbeacon;
-    %hyeonji - generationPeriodFromSpeed를 LTE에서도 써 보자
-    timeManagement.generationInterval(stationManagement.activeIDs(indexNewVehicles)) = generationPeriodFromSpeed(simValues.v(indexNewVehicles),appParams);
+    %hyeonji - generationPeriodFromSpeed를 LTE에서도 써 보자. 
+    %hyeonji - 근데 원래 highway는 indexNewVehicles가 없다. 전체 다 새로 짜 줘야 하지 않을까 싶다.
+    timeManagement.generationInterval(stationManagement.activeIDs) = generationPeriodFromSpeed(simValues.v,appParams);
 end
 % timeManagement.timeOfResourceAllocationLTE is for possible use in the future
 %timeManagement.timeOfResourceAllocationLTE(stationManagement.activeIDs(indexNewVehicles)) = timeManagement.timeNextPacket(stationManagement.activeIDs(indexNewVehicles));
