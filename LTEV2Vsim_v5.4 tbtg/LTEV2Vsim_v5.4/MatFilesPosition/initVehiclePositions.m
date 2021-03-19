@@ -170,13 +170,14 @@ if simParams.typeOfScenario~=2 % Not traffic trace
     % Gaussian with 'vMeanMs' mean and 'vStDevMs' standard deviation
     % the Gaussian is truncated to avoid negative values or still vehicles
     % (not optimized, but used only once during initialization)
-    simValues.v = abs(vMeanMs + vStDevMs.*randn(Nvehicles,1));
-    for i=1:Nvehicles
-        while simValues.v(i)<0 || (vMeanMs>0 && simValues.v(i)==0)
-            % if the speed is negative or zero, a new value is randomly selected
-            simValues.v(i) = abs(vMeanMs + vStDevMs.*randn(1,1));
-        end
-    end
+%     simValues.v = abs(vMeanMs + vStDevMs.*randn(Nvehicles,1));
+%     for i=1:Nvehicles
+%         while simValues.v(i)<0 || (vMeanMs>0 && simValues.v(i)==0)
+%             % if the speed is negative or zero, a new value is randomly selected
+%             simValues.v(i) = abs(vMeanMs + vStDevMs.*randn(1,1));
+%         end
+%     end
+    simValues.v = 20*ones(simValues.maxID,1); %일단 임의로 이렇게 둬 보자 - hj
     
     %     % Removed from version 5.2.10
     %     % Time resolution of position update corresponds to the beacon period

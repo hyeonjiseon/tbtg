@@ -203,8 +203,10 @@ timeManagement.timeNextPacket(stationManagement.activeIDs(indexNewVehicles)) = t
 if appParams.variabilityTbeacon==-1
     timeManagement.generationInterval(stationManagement.activeIDs(indexNewVehicles)) = generationPeriodFromSpeed(simValues.v(indexNewVehicles),appParams);
 else
-    timeManagement.generationInterval(stationManagement.activeIDs(indexNewVehicles)) = appParams.averageTbeacon - appParams.variabilityTbeacon/2 + appParams.variabilityTbeacon*rand(length(indexNewVehicles),1);
-    timeManagement.generationInterval(stationManagement.activeIDsLTE) = appParams.averageTbeacon;
+%     timeManagement.generationInterval(stationManagement.activeIDs(indexNewVehicles)) = appParams.averageTbeacon - appParams.variabilityTbeacon/2 + appParams.variabilityTbeacon*rand(length(indexNewVehicles),1);
+%     timeManagement.generationInterval(stationManagement.activeIDsLTE) = appParams.averageTbeacon;
+    %hyeonji - generationPeriodFromSpeed를 LTE에서도 써 보자
+    timeManagement.generationInterval(stationManagement.activeIDs(indexNewVehicles)) = generationPeriodFromSpeed(simValues.v(indexNewVehicles),appParams);
 end
 % timeManagement.timeOfResourceAllocationLTE is for possible use in the future
 %timeManagement.timeOfResourceAllocationLTE(stationManagement.activeIDs(indexNewVehicles)) = timeManagement.timeNextPacket(stationManagement.activeIDs(indexNewVehicles));
