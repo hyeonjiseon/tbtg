@@ -19,5 +19,5 @@ B = 300;
 % Autonomous allocation algorithm defined in 3GPP standard
 
 LTEV2Vsim(configFile,'simulationTime',T,'BRAlgorithm',18,'Raw',150,...
-    'beaconSizeBytes',B,'TypeOfScenario', 'ETSI-Highway');
+    'beaconSizeBytes',B,'TypeOfScenario', 'ETSI-Highway', 'cV', 5.56);
 

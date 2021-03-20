@@ -27,7 +27,9 @@ end
 if appParams.variabilityTbeacon~=-1 && (appParams.variabilityTbeacon<0 || appParams.variabilityTbeacon>=appParams.averageTbeacon)
     error('Error: "appParams.variabilityTbeacon" cannot be < 0 or >= "appParams.averageTbeacon" (except -1, automatic)');
 end
-if appParams.variabilityTbeacon==-1 % automatic
+
+%hyeonji - LTE 때도 돌아가게 하기 위해 0일 때도 쓸 수 있게 추가
+if appParams.variabilityTbeacon==-1 || appParams.variabilityTbeacon==0 % automatic
     % [camDiscretizationType]
     % Type of discretization: "allSteps" or "allocationAligned" [string]
     [appParams,varargin] = addNewParam(appParams,'camDiscretizationType','null','Type of discretization - it can be "allSteps" or "allocationAligned" if not "null" (continuous)','string',fileCfg,varargin{1});
