@@ -252,7 +252,7 @@ else
         end
         
         %hyeonji - 일정하게 둘 속도
-        [simParams,varargin] = addNewParam(simParams,'cV',20,'initial constant speed of vehicle (m/s)','double',fileCfg,varargin{1});
+        [simParams,varargin] = addNewParam(simParams,'cV',20,'initial constant speed of vehicle (km/h)','double',fileCfg,varargin{1});
         if simParams.cV < 0
             error('Error: "simParams.cV" cannot be < 0');
         end

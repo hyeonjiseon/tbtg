@@ -88,15 +88,15 @@ end
 
 % Packet generation
 timeManagement.timeGeneratedPacketInTxLTE = -1 * ones(simValues.maxID,1);
-if appParams.variabilityTbeacon==-1
+if appParams.variabilityTbeacon==-1 || appParams.variabilityTbeacon==0 %LTE에서도 속도에 따라 generation interval 바뀌도록 - hj
     if simParams.typeOfScenario~=2 % Not traffic trace
         timeManagement.generationInterval = generationPeriodFromSpeed(simValues.v,appParams);
     else
         timeManagement.generationInterval = appParams.averageTbeacon * ones(simValues.maxID,1);
     end
-else
-    timeManagement.generationInterval = appParams.averageTbeacon - appParams.variabilityTbeacon/2 + appParams.variabilityTbeacon*rand(simValues.maxID,1);
-    timeManagement.generationInterval(stationManagement.activeIDsLTE) = appParams.averageTbeacon;
+% else
+%     timeManagement.generationInterval = appParams.averageTbeacon - appParams.variabilityTbeacon/2 + appParams.variabilityTbeacon*rand(simValues.maxID,1);
+%     timeManagement.generationInterval(stationManagement.activeIDsLTE) = appParams.averageTbeacon;
 end
 % this additional delay can be used to add a delay from application to
 % access layer or to add an artificial delay in the generatioon

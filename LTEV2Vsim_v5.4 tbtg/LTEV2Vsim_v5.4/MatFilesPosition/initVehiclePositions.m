@@ -179,7 +179,7 @@ if simParams.typeOfScenario~=2 % Not traffic trace
 %     end
 
     %hyeonji - constant speed (m/s)
-    simValues.v = simParams.cV*ones(simValues.maxID,1);
+    simValues.v = simParams.cV / 3.6 *ones(simValues.maxID,1);
     
     %     % Removed from version 5.2.10
     %     % Time resolution of position update corresponds to the beacon period
