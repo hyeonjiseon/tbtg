@@ -9,9 +9,11 @@ switch appParams.camDiscretizationType
     
     case 'allSteps'
         Possible=0.1:0.1:1; %0.1부터 1까지 0.1간격, [0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1] - hj
+        %임의로 allSteps로 했더니 0.72가 나와야 할 상황에 0.8로 결과가 나오게 됨 - hj
     case 'allocationAligned'
         Possible=[0.1,0.2,0.5,1];
-end
+        %임의로 allocationAligned로 설정했더니 0.72가 나와야 할 상황에 0.5로 결과가 나오게 됨 - hj
+end %이것들은 generation period를 속도가 적게 변할 땐 어느 정도 일정하게 유지시키려는 의도로 짜여진 코드인 것 같다 - hj
 
 generationInterval=CPeriod;
 
