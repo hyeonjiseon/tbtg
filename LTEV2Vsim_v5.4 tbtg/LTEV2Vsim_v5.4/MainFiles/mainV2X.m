@@ -234,6 +234,7 @@ while timeManagement.timeNow < simParams.simulationTime
         printDebugGeneration(timeManagement,idEvent,positionManagement,outParams);
         
         timeManagement.timeNextPacket(idEvent) = timeManagement.timeNow + max(timeManagement.generationInterval(idEvent),timeManagement.dcc_minInterval(idEvent));
+        %현재시간에 genreationInterval을 더해서 또 이 시간이 되었을 때 패킷을 생성 - hj
         timeManagement.timeLastPacket(idEvent) = timeManagement.timeNow-timeManagement.addedToGenerationTime(idEvent);
         
         if simParams.technology==4 && simParams.coexMethod==1 && simParams.coexA_improvements>0

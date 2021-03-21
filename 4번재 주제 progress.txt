@@ -1,0 +1,41 @@
+해야할 것
+
+1. 자동차 속도에 따라서 메시지 간격 변하는 그래프 구현(3/19-3/20)
+ - 영준 '패킷 생성 로직' 받기
+ - 논문에 나온 1/x 그래프 이용 
+    => 논문 1번 식 이용하면 될 것 같다
+ 1) 영준논문 참고문헌 8의 2번 읽어보기
+  - CAMs triggering conditions(distance 4m이상 차이, speed 차이가 0.5m/s이상 차이, heading 4도 이상 차이, CAM 생성된 지 1초 이상 차이)
+  - vehicle이 이런 condition을 every T_CheckCamGen마다 체크한다. 이는 100ms이하이다. 따라서 1초에 최소 10번은 체크함
+  - CAM message에는 ITS PDU header와 containers가 있다. 
+    mandatory는 basic container(전송차량의 type, position과 같은 정보), 
+    high frequency container(전송차량의 acceleration, heading, speed같은 highly dynamic information)이 있고 
+    optional은 low frequency container(status of ther exterior lights, path history같은 static and dynamic information), 
+    special vehicle container(public transport, emergency vehicles, dangerous goods전송차량)가 있다.
+  - CAM size는 optional containers과 header의 data elements(DE)에 의해 결정된다.
+    ITS PDU header와 basic container는 madatory and fixed size이지만 16 DE 중 7이 optional.
+    container size는 variable하며 manufacturer와 context condition에 달려 있다.
+    low frequency container는 PathHistory와 같은 3 mandatory DE를 가지고 있다.
+    PathHistory size는 not fixed이다. 0에서 40 path entries를 사용 가능.
+  - Security certificates는 전송 전에 CAM에 attached될 수 있다. 
+    새로운 neighboring vehicle이 감지되거나 초당 1회에, 또는 RSU의 요청이 있을 때 on-demand로도 전송 가능하다.
+  - 결국 CAMs의 size는 200-800bytes 사이로 변할 수 있다. 
+    이런 변화는 V2X performance를 정확히 추정하는 데에 반드시 고려되어야 한다.
+ 2) v5.4 generationPeriodfromSpeed
+  - 그냥 속도 입력 받아서 있는 그대로 두면 된다. timeNextPacket에 generationInterval이 바로 적용된다.
+  - 5.4v는 11p에서만 cam interval이 가능하게 된 시뮬레이터라서 이후에도 11p에 이어지는 부분을 적용해야 하는가에 대한 고민 때문에 
+    확실한 부분만 5.0v로 가져가면 나아질까 생각했다. 하지만 어차피 생성된 패킷에 대한 처리 방식은 달라지는 게 없고 
+    오직 패킷 생성 방식만 달라진 것이기 때문에 그렇게까지 고민할 필요는 없어 보인다.
+    뒤에 RRI가 걱정되기도 해서 새로 시뮬레이터를 뜯어봐야 한다는 리스크도 좀 줄일 수 없을까 했는데 
+    영준이가 이 정도는 해야 한다고 하니까 이대로 용기 내어 가 보자.
+
+2. 나도 같은 속도 유지했을 때로 실험하면 되는데 이때 메시지가 한 간격밖에 안 나옴(3/21-3/22)
+ - 매번 속도를 바꿔가면서 실험을 해야 할 것 같음
+ - sci에 예약하기 위한 필드 RRI를 현재 속도에 따라 다음 메시지 언제 나오는 지 알고 예약
+   => aperiodic한 것은 속도 바뀌면 나타나게 되는 것.
+        tb가 딱히 있는 게 아니라 Tg랑 일치가 되어 버림.        
+        근데 이게 일치되면 reallocation이 local minima가 된다는 게 bazzi 논문에 나와 있음
+        이렇게 하면 Tb가 Tg와 달랐던 것과 달리 performance가 안 나빠진다는 기대를 통해 더 나은 솔루션을 제시 할 수 있을 것이다.
+        따라서 위와 같은 셋팅을 해 두고 reallocation이 속도에 따라 어떻게 나타나는 지 비교해 볼 필요가 있다.
+
+3. 속도를 일정하게 하지 말고 실제 주행 데이터에 따라서 변동을 주었을 때도 잘 되는 지 확인(3/23-3/24)
