@@ -3,7 +3,7 @@ function generationInterval = generationPeriodFromSpeed(speed,appParams)
 speedKmh = speed*3.6; %speed는 m/s라서 3.6을 곱하면 km/h로 변함 - hj
 N = speedKmh/10;
 
-CPeriod = (1.440)./N; %rufrnr 4/v와 같아짐 - hj
+CPeriod = (1.440)./N; %결국 4/v와 같아짐 - hj
 
 switch appParams.camDiscretizationType
     

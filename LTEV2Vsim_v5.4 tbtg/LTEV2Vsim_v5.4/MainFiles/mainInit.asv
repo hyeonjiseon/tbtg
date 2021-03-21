@@ -109,7 +109,6 @@ end
 %timeManagement.generationInterval(stationManagement.activeIDsLTE) = appParams.averageTbeacon;
 timeManagement.timeNextPacket = Inf * ones(simValues.maxID,1);
 timeManagement.timeNextPacket(stationManagement.activeIDs) = timeManagement.generationInterval(stationManagement.activeIDs) .* rand(length(stationManagement.activeIDs),1);
-%0부터 generationInterval 사이 uniformly random하게 - hj
 timeManagement.timeLastPacket = -1 * ones(simValues.maxID,1); % needed for the calculation of the CBR
 
 timeManagement.dcc_minInterval = zeros(simValues.maxID,1);
