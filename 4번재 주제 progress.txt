@@ -37,5 +37,12 @@
         근데 이게 일치되면 reallocation이 local minima가 된다는 게 bazzi 논문에 나와 있음
         이렇게 하면 Tb가 Tg와 달랐던 것과 달리 performance가 안 나빠진다는 기대를 통해 더 나은 솔루션을 제시 할 수 있을 것이다.
         따라서 위와 같은 셋팅을 해 두고 reallocation이 속도에 따라 어떻게 나타나는 지 비교해 볼 필요가 있다.
+ 1) v5.4 BRreassignment3GPPmode4 이해하기
+  - 그냥 RRI는 packetInterval로 정해지는 거 아닌가? 이걸 따로 설정해 줘야 하는 건가?
+    속도가 일정할 땐 RC값을 그대로 가게 하다가 속도 변화로 인해 generationInterval이 변하면 RC값을 다시 정해주긴 해야 할 것 같다.
+  - nextAllcate가 100ms인 NbeaconsT 이후에 되고 있다. 이게 RRI 역할을 하고 있는 것 같다.
+    NbeaconsT를 interval에 따라서 바꿔줘야 할 것 같다. 일단 interval과 RRI 사이의 관계를 보고 조절해 보자.
+    interval은 timeEvent가 timeNextPacket(idEvent)일 때의 주기를 만들어 주는 것이고, 
+    SPS는 mainLTEsubframeEnds 안에 들어있는 함수로서, 그 안에서 100ms 단위로 allocate 해 주면서 RC값 감소시키고 다 감소되면 reselection해 준다.
 
 3. 속도를 일정하게 하지 말고 실제 주행 데이터에 따라서 변동을 주었을 때도 잘 되는 지 확인(3/23-3/24)

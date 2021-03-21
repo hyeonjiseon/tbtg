@@ -36,7 +36,7 @@ subframeNextResource = ceil(stationManagement.BRid/appParams.NbeaconsF);%각 veh
 subframesToNextAlloc = (subframeNextResource>currentT).*(subframeNextResource-currentT)+(subframeNextResource<=currentT).*(subframeNextResource+appParams.NbeaconsT-currentT);
 %currentT는 현재 subframe으로 1부터 100(NbeaconsF)까지이다. - hj
 %현재 기준으로 NextAllocation까지 남은 subframe - hj
-%RRI가 100ms 기준으로 되어 있는 것 같다. 그래서 NbeaconsT가 100인가 봄 - hj
+%RRI가 100ms로 되어 이
 scheduledID_PHY = activeIdsLTE(timeManagement.timeLastPacket(activeIdsLTE) > timeManagement.timeNow-phyParams.Tsf-1e-8 & (subframesToNextAlloc(activeIdsLTE) < simParams.subframeT1Mode4 | subframesToNextAlloc(activeIdsLTE)>simParams.subframeT2Mode4));
 scheduledID_PHY(timeManagement.timeLastPacket(scheduledID_PHY)<0) = [];
 
