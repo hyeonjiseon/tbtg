@@ -85,8 +85,40 @@ if ~isempty(stationManagement.transmittingIDsLTE)
     
 end
 
-% Cycle that updates per each vehicle and BR the knownUsedMatrix
-%  knownUsedMatrix = zeros(appParams.Nbeacons,simValues.maxID);
+%hyeonji - 기존 RRI 부분이니까 다시 작성해야 함
+% % Cycle that updates per each vehicle and BR the knownUsedMatrix
+% %  knownUsedMatrix = zeros(appParams.Nbeacons,simValues.maxID);
+% if ~isempty(stationManagement.transmittingIDsLTE)     
+%     for i = 1:length(stationManagement.indexInActiveIDsOnlyLTE_OfTxLTE)
+%         idVtx = stationManagement.transmittingIDsLTE(i);
+%         indexVtxLte = stationManagement.indexInActiveIDsOnlyLTE_OfTxLTE(i);
+%         BRtx = stationManagement.BRid(idVtx);
+%         for indexNeighborsOfVtx = 1:length(stationManagement.neighborsIDLTE(indexVtxLte,:)) %transmittingID의 이웃들 갯수 - hj
+%            idVrx = stationManagement.neighborsIDLTE(indexVtxLte,indexNeighborsOfVtx); %transmittingID의 neighborsID - hj
+%            if idVrx<=0 %neighborsID가 없으면 break - hj
+%                break;
+%            end
+%            % IF the SCI is transmitted in this subframe AND if it is correctly
+%            % received AND the corresponding value of 'knownUsedMatrix' is lower
+%            % than what sent in the SCI (means the value is not updated)
+%            % THEN the corresponding value of 'knownUsedMatrix' is updated
+%            % 이 subframe에 sci가 전송되어 정확하게 수신되었다 &&
+%            % knownUsedMatrix의 (transmittingID, neigborsID)가 transmittingID의 RC값보다 작다
+%            % -> knowUsedMatrix를 transmittingID의 RC값으로 update한다. - hj
+%            if stationManagement.correctSCImatrixLTE(i,indexNeighborsOfVtx) == 1 && ...
+%                   stationManagement.knownUsedMatrixLTE(BRtx,idVrx) < stationManagement.resReselectionCounterLTE(idVtx)
+%                stationManagement.knownUsedMatrixLTE(BRtx,idVrx) = stationManagement.resReselectionCounterLTE(idVtx);
+%            % NOTE: the SCI is here assumed to advertise the current value of the reselection
+%            % counter, which is an approximation of what in TS 36.213, Table 14.2.1-2
+%            elseif stationManagement.correctSCImatrixLTE(i, indexNeighborsOfVtx) == 0 
+%                stationManagement.knownUsedMatrixLTE(BRtx, idVrx) = 0;
+%                %이 subframe에 sci가 전송되어 정확하게 수신되지 않았으면 knownUsedMatrix값을 0으로 둔다. - hj
+%            end
+%         end
+%     end
+% end
+
+%hyeonji - RRI를 packetInterval에 따라서 바뀔 수 있도록
 if ~isempty(stationManagement.transmittingIDsLTE)     
     for i = 1:length(stationManagement.indexInActiveIDsOnlyLTE_OfTxLTE)
         idVtx = stationManagement.transmittingIDsLTE(i);
@@ -96,17 +128,9 @@ if ~isempty(stationManagement.transmittingIDsLTE)
            idVrx = stationManagement.neighborsIDLTE(indexVtxLte,indexNeighborsOfVtx); %transmittingID의 neighborsID - hj
            if idVrx<=0 %neighborsID가 없으면 break - hj
                break;
-           end
-           % IF the SCI is transmitted in this subframe AND if it is correctly
-           % received AND the corresponding value of 'knownUsedMatrix' is lower
-           % than what sent in the SCI (means the value is not updated)
-           % THEN the corresponding value of 'knownUsedMatrix' is updated
-           % 이 subframe에 sci가 전송되어 정확하게 수신되었다 &&
-           % knownUsedMatrix의 (transmittingID, neigborsID)가 transmittingID의 RC값보다 작다
-           % -> knowUsedMatrix를 transmittingID의 RC값으로 update한다. - hj
-           if stationManagement.correctSCImatrixLTE(i,indexNeighborsOfVtx) == 1 && ...
-                  stationManagement.knownUsedMatrixLTE(BRtx,idVrx) < stationManagement.resReselectionCounterLTE(idVtx)
-               stationManagement.knownUsedMatrixLTE(BRtx,idVrx) = stationManagement.resReselectionCounterLTE(idVtx);
+           end           
+           if stationManagement.correctSCImatrixLTE(i,indexNeighborsOfVtx) == 1 % 이 subframe에 sci가 전송되어 정확하게 수신되었다
+               stationManagement.RRIUsedMatrixLTE(BRtx,idVrx) = stationManagement.resReselectionCounterLTE(idVtx);
            % NOTE: the SCI is here assumed to advertise the current value of the reselection
            % counter, which is an approximation of what in TS 36.213, Table 14.2.1-2
            elseif stationManagement.correctSCImatrixLTE(i, indexNeighborsOfVtx) == 0 
@@ -116,6 +140,7 @@ if ~isempty(stationManagement.transmittingIDsLTE)
         end
     end
 end
+
 
 %% Update the resReselectionCounter and evaluate which vehicles need reselection
 % Calculate scheduledID
@@ -220,22 +245,22 @@ for indexSensingV = 1:Nscheduled
         end
     end        
     
-    % To mark unacceptable RB as occupied, their power is set to Inf
-    sensingMatrixPerm = sensingMatrixPerm + (1-usableBRs) * max(phyParams.P_ERP_MHz_LTE);
-    
-    % Sort sensingMatrix in ascending order
-    [~, bestBRPerm] = sort(sensingMatrixPerm);
+    %hyeonji - (step 3 : RSSI 평균값 들 중 가장 낮은 20% 중에서) 랜덤선택
+%     % To mark unacceptable RB as occupied, their power is set to Inf
+%     sensingMatrixPerm = sensingMatrixPerm + (1-usableBRs) * max(phyParams.P_ERP_MHz_LTE);
+%     
+%     % Sort sensingMatrix in ascending order
+%     [~, bestBRPerm] = sort(sensingMatrixPerm);
+% 
+%     % Reorder bestBRid matrix
+%     bestBR = rpMatrix(bestBRPerm);
 
-    % Reorder bestBRid matrix
-    bestBR = rpMatrix(bestBRPerm);
-
-    %step 3 : RSSI 평균값 들 중 가장 낮은 20% 중에서 랜덤선택
 %     % Keep the best M canditates
 %     bestBR = bestBR(1:MBest);
-% 
-%     % Reassign, selecting a random BR among the bestBR
-%     BRindex = randi(MBest);
-%     BR = bestBR(BRindex);
+
+    % Reassign, selecting a random BR among the bestBR
+    BRindex = randi(MBest);
+    BR = bestBR(BRindex);
 
     stationManagement.BRid(scheduledID(indexSensingV))=BR;
     Nreassign = Nreassign + 1;

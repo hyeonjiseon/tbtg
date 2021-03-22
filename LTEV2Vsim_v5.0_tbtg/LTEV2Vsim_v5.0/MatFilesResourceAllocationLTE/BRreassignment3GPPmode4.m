@@ -119,7 +119,22 @@ end
 % end
 
 %hyeonji - RRI를 packetInterval에 따라서 바뀔 수 있도록
-
+% if ~isempty(stationManagement.transmittingIDsLTE)     
+%     for i = 1:length(stationManagement.indexInActiveIDsOnlyLTE_OfTxLTE)
+%         idVtx = stationManagement.transmittingIDsLTE(i);
+%         indexVtxLte = stationManagement.indexInActiveIDsOnlyLTE_OfTxLTE(i);
+%         BRtx = stationManagement.BRid(idVtx);
+%         for indexNeighborsOfVtx = 1:length(stationManagement.neighborsIDLTE(indexVtxLte,:)) %transmittingID의 이웃들 갯수 - hj
+%            idVrx = stationManagement.neighborsIDLTE(indexVtxLte,indexNeighborsOfVtx); %transmittingID의 neighborsID - hj
+%            if idVrx<=0 %neighborsID가 없으면 break - hj
+%                break;
+%            end           
+%            if stationManagement.correctSCImatrixLTE(i,indexNeighborsOfVtx) == 1 % 이 subframe에 sci가 전송되어 정확하게 수신되었다
+%                stationManagement.RRIMatrix(BRtx,idVrx) = stationManagement.resReselectionCounterLTE(idVtx);          
+%            end
+%         end
+%     end
+% end
 
 
 %% Update the resReselectionCounter and evaluate which vehicles need reselection
