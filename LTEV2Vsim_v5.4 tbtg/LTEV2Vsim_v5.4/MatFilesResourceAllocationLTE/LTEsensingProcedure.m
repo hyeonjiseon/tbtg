@@ -91,6 +91,9 @@ if ~isempty(stationManagement.transmittingIDsLTE)
            % received AND the corresponding value of 'knownUsedMatrix' is lower
            % than what sent in the SCI (means the value is not updated)
            % THEN the corresponding value of 'knownUsedMatrix' is updated
+           %이 서브 프레임에서 SCI가 전송되고 올바르게 수신되고 
+           %'knownUsedMatrix'의 해당 값이 SCI에서 전송된 값보다 낮으면(값이 업데이트되지 않음을 의미 함)
+           %'knownUsedMatrix'의 해당 값이 업데이트됩니다. - hj
            if stationManagement.correctSCImatrixLTE(i,indexNeighborsOfVtx) == 1 
                % Matrix registering the received SCIs
                if simParams.technology==4 && simParams.coexMethod==6
