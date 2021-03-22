@@ -10,6 +10,7 @@ switch appParams.camDiscretizationType
     case 'allSteps'
         Possible=0.1:0.1:1; %0.1부터 1까지 0.1간격, [0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1] - hj
         %임의로 allSteps로 했더니 0.72가 나와야 할 상황에 0.8로 결과가 나오게 됨 - hj
+        %이게 yj논문 traffic shaping이랑 비슷한 것 같다 - hj
     case 'allocationAligned'
         Possible=[0.1,0.2,0.5,1];
         %임의로 allocationAligned로 설정했더니 0.72가 나와야 할 상황에 0.5로 결과가 나오게 됨 - hj
