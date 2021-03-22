@@ -45,4 +45,12 @@
     interval은 timeEvent가 timeNextPacket(idEvent)일 때의 주기를 만들어 주는 것이고, 
     SPS는 mainLTEsubframeEnds 안에 들어있는 함수로서, 그 안에서 100ms 단위로 allocate 해 주면서 RC값 감소시키고 다 감소되면 reselection해 준다.
 
+
 3. 속도를 일정하게 하지 말고 실제 주행 데이터에 따라서 변동을 주었을 때도 잘 되는 지 확인(3/23-3/24)
+
+4. 논문 읽는 법
+ 1) motivation
+ 2) problem definition
+ 3) solution approach
+ 4) evaluation
+ 5) conclusion, critic
