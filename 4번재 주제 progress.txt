@@ -46,6 +46,10 @@
     SPS는 mainLTEsubframeEnds 안에 들어있는 함수로서, 그 안에서 100ms 단위로 allocate 해 주면서 RC값 감소시키고 다 감소되면 reselection해 준다.
   - 이게 아니라 knownUsedMatrix가 RRI를 나타내는 것이었다.
 
+ 2) v5.0 knownUsedmatrix쪽 고쳐서 RRI
+  - generationInterval 정해지면 RRP 실수인 거 초기화시켜주기..
+ 	%hyeonji - 왠지 여기에 추가하고 싶음 RRP가 실수로 나올 거라서 미리 칸을 정해줄 수 없음
+        stationManagement.ReserveRRPMatrix = zeros(appParams.NbeaconsT*appParams.NbeaconsF,,simValues.maxID);
 
 3. 속도를 일정하게 하지 말고 실제 주행 데이터에 따라서 변동을 주었을 때도 잘 되는 지 확인(3/23-3/24)
 

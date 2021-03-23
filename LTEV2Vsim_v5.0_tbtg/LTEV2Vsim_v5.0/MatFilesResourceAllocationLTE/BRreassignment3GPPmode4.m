@@ -137,7 +137,8 @@ if ~isempty(stationManagement.transmittingIDsLTE)
         idVtx = stationManagement.transmittingIDsLTE(i);
         indexVtxLte = stationManagement.indexInActiveIDsOnlyLTE_OfTxLTE(i);
         BRtx = stationManagement.BRid(idVtx);
-        %hyeonji transmittingID의 BRid에서 RRP만큼 떨어진 곳으로 예약
+        %hyeonji - transmittingID의 BRid에서 RRP만큼 떨어진 곳으로 예약
+        %예약된 거 있나 비워주는 작업이 필요할까?
         stationManagement.ReserveRRPMatrix(BRtx,stationManagement.generationInterval(idVtx),idVtx) = 1;
         for indexNeighborsOfVtx = 1:length(stationManagement.neighborsIDLTE(indexVtxLte,:)) %transmittingID의 이웃들 갯수 - hj
            idVrx = stationManagement.neighborsIDLTE(indexVtxLte,indexNeighborsOfVtx); %transmittingID의 neighborsID - hj
@@ -226,7 +227,7 @@ for indexSensingV = 1:Nscheduled
     %        - 이 때, selection window에 있는 모든 CSRs의 20% 이상을 포함하지 않는다면
     %        - RSRP threshold를 3dB씩 증가시키며 반복한다.
     
-    %hyeonji - 
+    %hyeonji
     knownRRPMatrixScheduled = sum(stationManagement.updateReserveMatrix(:,:,scheduledID(indexSensingV)),2)';
     
     % The knownUsedMatrix of the scheduled users is obtained

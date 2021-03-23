@@ -137,14 +137,13 @@ if ~isempty(stationManagement.transmittingIDsLTE)
         idVtx = stationManagement.transmittingIDsLTE(i);
         indexVtxLte = stationManagement.indexInActiveIDsOnlyLTE_OfTxLTE(i);
         BRtx = stationManagement.BRid(idVtx);
-        %
+        %hyeonji - transmittingID의 BRid에서 RRP만큼 떨어진 곳으로 예약
         stationManagement.ReserveRRPMatrix(BRtx,stationManagement.generationInterval(idVtx),idVtx) = 1;
         for indexNeighborsOfVtx = 1:length(stationManagement.neighborsIDLTE(indexVtxLte,:)) %transmittingID의 이웃들 갯수 - hj
            idVrx = stationManagement.neighborsIDLTE(indexVtxLte,indexNeighborsOfVtx); %transmittingID의 neighborsID - hj
            if idVrx<=0 %neighborsID가 없으면 break - hj
                break;
-           end       
-           
+           end          
            if stationManagement.correctSCImatrixLTE(i,indexNeighborsOfVtx) == 1 % 이 subframe에 sci가 전송되어 정확하게 수신되었다
                %hyeonji - 속도에 따른 RRP만큼 떨어진 newBRid, RRP, neighborsID에 1 표시한 RRPMatrix                   
                [BR, RRP] = find(stationManagement.ReserveRRPMatrix(:,:,idVtx)==1);

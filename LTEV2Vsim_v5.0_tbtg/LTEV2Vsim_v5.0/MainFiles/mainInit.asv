@@ -292,11 +292,10 @@ if simParams.technology ~= 2 % not only 11p
         stationManagement.scheduledReassignLTE = randi(stationManagement.NScheduledReassignLTE,simValues.maxID,1);
     end
 
-    if simParams.BRAlgorithm==18    
+    if simParams.BRAlgorithm==18
+        %hyeonji - 왠지 여기에 추가하고 싶음
+        stationManagement.ReserveRRPMatrix = zeros(appParams.NbeaconsT*appParams.NbeaconsF, 
         
-        %hyeonji - 왠지 여기에 추가하고 싶음 RRP가 실수로 나올 거라서 미리 칸을 정해줄 수 없음
-        stationManagement.ReserveRRPMatrix = zeros(appParams.NbeaconsT*appParams.NbeaconsF,simValues.maxID,simValues.maxID);
-        stationManagement.knownRRPMatrix = zeros(appParams.NbeaconsT*appParams.NbeaconsF,simValues.maxID,simValues.maxID-1);
         
         % Find min and max values for random counter (BRAlgorithm=18)
         [simParams.minRandValueMode4,simParams.maxRandValueMode4] = findRandValueMode4(appParams.averageTbeacon,simParams);
