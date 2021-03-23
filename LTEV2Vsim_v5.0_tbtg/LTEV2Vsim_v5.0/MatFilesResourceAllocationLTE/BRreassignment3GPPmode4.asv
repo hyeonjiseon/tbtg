@@ -107,7 +107,12 @@ end
 %            % -> knowUsedMatrix를 transmittingID의 RC값으로 update한다. - hj
 %            if stationManagement.correctSCImatrixLTE(i,indexNeighborsOfVtx) == 1 && ...
 %                   stationManagement.knownUsedMatrixLTE(BRtx,idVrx) < stationManagement.resReselectionCounterLTE(idVtx)
+%               %i번째 tx의 indexNeighborsOfVtx번째 neighbors에 sci가 수신되고 
+%               %knownUsedMatrix(txID의 BRid, neighborsID)가 tx의 ReselectionCounter보다 작으면 - hj
+%               %이웃이 쏜 SCI가 해독됐고, 내 이웃들이 현재 쏘고 있는 자원칸을 이웃들이 얼마나 더 쓸 건지,
+%               %이웃이 계쏙 쓰면 그것을 제외하기 위함 - jh
 %                stationManagement.knownUsedMatrixLTE(BRtx,idVrx) = stationManagement.resReselectionCounterLTE(idVtx);
+%                %knownUsedMatrix(txID의 BRid, neighborsID)에 그 RC값 update - hj
 %            % NOTE: the SCI is here assumed to advertise the current value of the reselection
 %            % counter, which is an approximation of what in TS 36.213, Table 14.2.1-2
 %            elseif stationManagement.correctSCImatrixLTE(i, indexNeighborsOfVtx) == 0 
@@ -118,24 +123,32 @@ end
 %     end
 % end
 
-%hyeonji - RRI를 packetInterval에 따라서 바뀔 수 있도록
+%hyeonji - RC=0일 때 newBRid(IDvehicle), RRP, IDvehicle을 나타내는 conductReserveMatrix를 뽑아냄
+% if ~isempty(stationManagement.transmittingIDsLTE)
+%     for i = 1:length(stationManagement.transmittingIDsLTE)
+%         stationManagement.ReserveRRPMatrix(stationManagement.BRid(stationManagement.transmittingIDsLTE),stationManagement.generationInterval,stationManagement.transmittingIDsLTE) = 1;
+%         %[stationManagement] = newBRandRRP(simParams,stationManagement,timeManagement,stationManagement.transmittingIDsLTE(i),Nbeacons,NbeaconsT,NbeaconsF);
+%     end
+% end
+
+%hyeonji - packetInterval에 따라서 바뀌는 RRP로 예약
 if ~isempty(stationManagement.transmittingIDsLTE)     
     for i = 1:length(stationManagement.indexInActiveIDsOnlyLTE_OfTxLTE)
         idVtx = stationManagement.transmittingIDsLTE(i);
         indexVtxLte = stationManagement.indexInActiveIDsOnlyLTE_OfTxLTE(i);
         BRtx = stationManagement.BRid(idVtx);
+        %
+        stationManagement.ReserveRRPMatrix(BRtx,stationManagement.generationInterval(idVtx),idVtx) = 1;
         for indexNeighborsOfVtx = 1:length(stationManagement.neighborsIDLTE(indexVtxLte,:)) %transmittingID의 이웃들 갯수 - hj
            idVrx = stationManagement.neighborsIDLTE(indexVtxLte,indexNeighborsOfVtx); %transmittingID의 neighborsID - hj
            if idVrx<=0 %neighborsID가 없으면 break - hj
                break;
-           end           
+           end       
+           
            if stationManagement.correctSCImatrixLTE(i,indexNeighborsOfVtx) == 1 % 이 subframe에 sci가 전송되어 정확하게 수신되었다
-               stationManagement.RRIUsedMatrixLTE(BRtx,idVrx) = stationManagement.resReselectionCounterLTE(idVtx);
-           % NOTE: the SCI is here assumed to advertise the current value of the reselection
-           % counter, which is an approximation of what in TS 36.213, Table 14.2.1-2
-           elseif stationManagement.correctSCImatrixLTE(i, indexNeighborsOfVtx) == 0 
-               stationManagement.knownUsedMatrixLTE(BRtx, idVrx) = 0;
-               %이 subframe에 sci가 전송되어 정확하게 수신되지 않았으면 knownUsedMatrix값을 0으로 둔다. - hj
+               %hyeonji - 속도에 따른 RRP만큼 떨어진 newBRid, RRP, neighborsID에 1 표시한 RRPMatrix                   
+               [BR, RRP] = find(stationManagement.ReserveRRPMatrix(:,:,idVtx)==1);
+               stationManagement.knownRRPMatrix(BR, RRP, idVrx) = 1;          
            end
         end
     end
@@ -161,7 +174,7 @@ stationManagement.resReselectionCounterLTE(activeIdsLTE) = stationManagement.res
 % fclose(fid);
 
 % Calculate IDs of vehicles which perform reselection
-scheduledID = find (stationManagement.resReselectionCounterLTE==0);
+scheduledID = find(stationManagement.resReselectionCounterLTE==0);
 
 % Calculate the number of vehicles which perform reselection
 Nscheduled = length(scheduledID);
@@ -214,19 +227,25 @@ for indexSensingV = 1:Nscheduled
     %        - 이 때, selection window에 있는 모든 CSRs의 20% 이상을 포함하지 않는다면
     %        - RSRP threshold를 3dB씩 증가시키며 반복한다.
     
+    %hyeonji - 
+    knownRRPMatrixScheduled = sum(stationManagement.updateReserveMatrix(:,:,scheduledID(indexSensingV)),2)';
+    
     % The knownUsedMatrix of the scheduled users is obtained
-    knownUsedMatrixScheduled = stationManagement.knownUsedMatrixLTE(:,scheduledID(indexSensingV))';
+%     knownUsedMatrixScheduled = stationManagement.knownUsedMatrixLTE(:,scheduledID(indexSensingV))';
 
     % Create random permutation of the column indexes of sensingMatrix in
     % order to avoid the ascending order on the indexes of cells with the
     % same value (sort effect) -> minimize the probability of choosing the same
     % resource
     rpMatrix = randperm(Nbeacons);
+    
+    %hyeonji
+    knownRRPMatrixScheduledPerm = knownRRPMatrixScheduled(rpMatrix);
 
     % Build matrix made of random permutations of the column indexes
     % Permute sensing matrix
     sensingMatrixPerm = sensingMatrixScheduled(rpMatrix);
-    knownUsedMatrixPerm = knownUsedMatrixScheduled(rpMatrix);
+%     knownUsedMatrixPerm = knownUsedMatrixScheduled(rpMatrix);
 
     % Now perform sorting and relocation taking into account the threshold on RSRP
     % Please note that the sensed power is on a per MHz resource basis,
@@ -237,7 +256,9 @@ for indexSensingV = 1:Nscheduled
     while powerThreshold < 100
         % If the number of acceptable BRs is lower than MBest,
         % powerThreshold is increased by 3 dB
-        usableBRs = ((sensingMatrixPerm*0.015)<powerThreshold) | ((sensingMatrixPerm<inf) & (knownUsedMatrixPerm<1));
+%         usableBRs = ((sensingMatrixPerm*0.015)<powerThreshold) | ((sensingMatrixPerm<inf) & (knownUsedMatrixPerm<1));
+        %hyeonji
+        usableBRs = ((sensingMatrixPerm*0.015)<powerThreshold) | ((sensingMatrixPerm<inf) & (knownRRPMatrixScheduledPerm<1));
         if sum(usableBRs) < MBest
             powerThreshold = powerThreshold * 2;
         else
@@ -257,6 +278,10 @@ for indexSensingV = 1:Nscheduled
 
 %     % Keep the best M canditates
 %     bestBR = bestBR(1:MBest);
+
+    %hyeonji
+    idx = find(usableBRs == 1);
+    bestBR = rpMatrix(idx);
 
     % Reassign, selecting a random BR among the bestBR
     BRindex = randi(MBest);
