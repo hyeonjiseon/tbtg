@@ -10,6 +10,6 @@ clc          % Clear the command window
 
 %for i = 1:length(density)
     LTEV2Vsim('BenchmarkPoisson.cfg','simulationTime',10, 'rho', 50,...
-        'BRAlgorithm',18);
+        'BRAlgorithm',18, 'camDiscretizationType', 'allSteps');
 %end
 %'MCS_LTE', 7, 'printCBR', true

@@ -47,6 +47,22 @@ if appParams.variabilityTbeacon<0 || appParams.variabilityTbeacon>=appParams.ave
     error('Error: "appParams.variabilityTbeacon" cannot be < 0 or >= "appParams.averageTbeacon"');
 end
 
+%hyeonji - v5.4 따라서 cam 관련 파라미터
+% [camDiscretizationType]
+% Type of discretization: "allSteps" or "allocationAligned" [string]
+[appParams,varargin] = addNewParam(appParams,'camDiscretizationType','null','Type of discretization - it can be "allSteps" or "allocationAligned" if not "null" (continuous)','string',fileCfg,varargin{1});
+if ~strcmp(appParams.camDiscretizationType,'null') && ~strcmp(appParams.camDiscretizationType,'allSteps') && ~strcmp(appParams.camDiscretizationType,'allocationAligned') 
+    error('Error in the setting of "appParams.camDiscretizationType".');
+end
+
+if ~strcmp(appParams.camDiscretizationType,'null')
+% [camDiscretizationIncrease]
+% Percentage of the admissibile increase of the generation interval [%, double]
+    [appParams,varargin]= addNewParam(appParams,'camDiscretizationIncrease',20,'Percentage of the admissibile increase of the generation interval','double',fileCfg,varargin{1});
+    if appParams.camDiscretizationIncrease<0 || appParams.camDiscretizationIncrease>100
+        error('Error: appParams.camDiscretizationIncrease=%.1f! Cannot be < 0 or >100',appParams.camDiscretizationIncrease);
+    end
+end
 
 % The beacon periodicity fB is derived - never used
 %appParams.fB = 1/appParams.averageTbeacon;

@@ -51,6 +51,7 @@
  	%hyeonji - 왠지 여기에 추가하고 싶음 RRP가 실수로 나올 거라서 미리 칸을 정해줄 수 없음
         stationManagement.ReserveRRPMatrix = zeros(appParams.NbeaconsT*appParams.NbeaconsF,,simValues.maxID);
   - RRI가 정수형의 배수여야 index에 넣는데.. 이게 실수라서 어떻게 하지? 논문에서 확실히 실수형으로 갔는 지 확인해보자
+  - 영준이가 RRI를 0.1부터 1까지 0.1 단위로 하라고 했다.
 
 3. 속도를 일정하게 하지 말고 실제 주행 데이터에 따라서 변동을 주었을 때도 잘 되는 지 확인(3/23-3/24)
 

@@ -139,8 +139,8 @@ if ~isempty(stationManagement.transmittingIDsLTE)
            end          
            if stationManagement.correctSCImatrixLTE(i,indexNeighborsOfVtx) == 1 % 이 subframe에 sci가 전송되어 정확하게 수신되었다
                %hyeonji - 속도에 따른 RRP만큼 떨어진 newBRid, RRP, neighborsID에 1 표시한 RRPMatrix                   
-               [BR, RRP] = find(stationManagement.ReserveRRPMatrix(:,:,idVtx)==1);
-               stationManagement.knownRRPMatrix(BR, RRP, idVrx) = 1;          
+               [BR, RRP] = find(stationManagement.ReserveRRPMatrix(:,:,idVtx)==1); %송신자 입장에서 예약한 게 수신됨 
+               stationManagement.knownRRPMatrix(BR, RRP, idVrx) = 1; %수신자 입장에서 RRP 이후 같은 위치 BRid에 체크         
            end
         end
     end
@@ -219,11 +219,11 @@ for indexSensingV = 1:Nscheduled
     %        - 이 때, selection window에 있는 모든 CSRs의 20% 이상을 포함하지 않는다면
     %        - RSRP threshold를 3dB씩 증가시키며 반복한다.
     
-    %hyeonji
-%     knownRRPMatrixScheduled = sum(stationManagement.ReserveRRPMatrix(:,:,scheduledID(indexSensingV)),2)';
+    %hyeonji - BR에 해당하는 RRP 있던 것 더함
+    knownRRPMatrixScheduled = sum(stationManagement.ReserveRRPMatrix(:,:,scheduledID(indexSensingV)),2)';
     
     % The knownUsedMatrix of the scheduled users is obtained
-    knownUsedMatrixScheduled = stationManagement.knownUsedMatrixLTE(:,scheduledID(indexSensingV))';
+%     knownUsedMatrixScheduled = stationManagement.knownUsedMatrixLTE(:,scheduledID(indexSensingV))';
 
     % Create random permutation of the column indexes of sensingMatrix in
     % order to avoid the ascending order on the indexes of cells with the
@@ -232,12 +232,12 @@ for indexSensingV = 1:Nscheduled
     rpMatrix = randperm(Nbeacons);
     
     %hyeonji
-%     knownRRPMatrixScheduledPerm = knownRRPMatrixScheduled(rpMatrix);
+    knownRRPMatrixScheduledPerm = knownRRPMatrixScheduled(rpMatrix);
 
     % Build matrix made of random permutations of the column indexes
     % Permute sensing matrix
     sensingMatrixPerm = sensingMatrixScheduled(rpMatrix);
-    knownUsedMatrixPerm = knownUsedMatrixScheduled(rpMatrix);
+%     knownUsedMatrixPerm = knownUsedMatrixScheduled(rpMatrix);
 
     % Now perform sorting and relocation taking into account the threshold on RSRP
     % Please note that the sensed power is on a per MHz resource basis,
@@ -248,9 +248,9 @@ for indexSensingV = 1:Nscheduled
     while powerThreshold < 100
         % If the number of acceptable BRs is lower than MBest,
         % powerThreshold is increased by 3 dB
-        usableBRs = ((sensingMatrixPerm*0.015)<powerThreshold) | ((sensingMatrixPerm<inf) & (knownUsedMatrixPerm<1));
+%         usableBRs = ((sensingMatrixPerm*0.015)<powerThreshold) | ((sensingMatrixPerm<inf) & (knownUsedMatrixPerm<1));
         %hyeonji
-%         usableBRs = ((sensingMatrixPerm*0.015)<powerThreshold) | ((sensingMatrixPerm<inf) & (knownRRPMatrixScheduledPerm<1));
+        usableBRs = ((sensingMatrixPerm*0.015)<powerThreshold) | ((sensingMatrixPerm<inf) & (knownRRPMatrixScheduledPerm<1));
         if sum(usableBRs) < MBest
             powerThreshold = powerThreshold * 2;
         else
@@ -258,22 +258,22 @@ for indexSensingV = 1:Nscheduled
         end
     end        
     
-    %hyeonji - (step 3 : RSSI 평균값 들 중 가장 낮은 20% 중에서) 랜덤선택
-%     % To mark unacceptable RB as occupied, their power is set to Inf
-%     sensingMatrixPerm = sensingMatrixPerm + (1-usableBRs) * max(phyParams.P_ERP_MHz_LTE);
-%     
-%     % Sort sensingMatrix in ascending order
-%     [~, bestBRPerm] = sort(sensingMatrixPerm);
-% 
-%     % Reorder bestBRid matrix
-%     bestBR = rpMatrix(bestBRPerm);
+    %hyeonji - (step 3 : RSSI 평균값들 중 가장 낮은 20% 중에서) 랜덤선택
+    % To mark unacceptable RB as occupied, their power is set to Inf
+    sensingMatrixPerm = sensingMatrixPerm + (1-usableBRs) * max(phyParams.P_ERP_MHz_LTE);
+    
+    % Sort sensingMatrix in ascending order
+    [~, bestBRPerm] = sort(sensingMatrixPerm);
 
-%     % Keep the best M canditates
-%     bestBR = bestBR(1:MBest);
+    % Reorder bestBRid matrix
+    bestBR = rpMatrix(bestBRPerm);
 
-    %hyeonji
-    idx = find(usableBRs == 1);
-    bestBR = rpMatrix(idx);
+    % Keep the best M canditates
+    bestBR = bestBR(1:MBest);
+
+    %hyeonji - NR SPS
+%     idx = find(usableBRs == 1);
+%     bestBR = rpMatrix(idx);
 
     % Reassign, selecting a random BR among the bestBR
     BRindex = randi(MBest);
