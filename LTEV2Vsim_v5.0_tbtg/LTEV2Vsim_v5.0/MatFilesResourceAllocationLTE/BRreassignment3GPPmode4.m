@@ -86,8 +86,8 @@ if ~isempty(stationManagement.transmittingIDsLTE)
 end
 
 %hyeonji - 기존 RRI 부분이니까 다시 작성해야 함
-% % Cycle that updates per each vehicle and BR the knownUsedMatrix
-% %  knownUsedMatrix = zeros(appParams.Nbeacons,simValues.maxID);
+% Cycle that updates per each vehicle and BR the knownUsedMatrix
+% knownUsedMatrix = zeros(appParams.Nbeacons,simValues.maxID);
 % if ~isempty(stationManagement.transmittingIDsLTE)     
 %     for i = 1:length(stationManagement.indexInActiveIDsOnlyLTE_OfTxLTE)
 %         idVtx = stationManagement.transmittingIDsLTE(i);
@@ -123,14 +123,6 @@ end
 %     end
 % end
 
-%hyeonji - RC=0일 때 newBRid(IDvehicle), RRP, IDvehicle을 나타내는 conductReserveMatrix를 뽑아냄
-% if ~isempty(stationManagement.transmittingIDsLTE)
-%     for i = 1:length(stationManagement.transmittingIDsLTE)
-%         stationManagement.ReserveRRPMatrix(stationManagement.BRid(stationManagement.transmittingIDsLTE),stationManagement.generationInterval,stationManagement.transmittingIDsLTE) = 1;
-%         %[stationManagement] = newBRandRRP(simParams,stationManagement,timeManagement,stationManagement.transmittingIDsLTE(i),Nbeacons,NbeaconsT,NbeaconsF);
-%     end
-% end
-
 %hyeonji - packetInterval에 따라서 바뀌는 RRP로 예약
 if ~isempty(stationManagement.transmittingIDsLTE)     
     for i = 1:length(stationManagement.indexInActiveIDsOnlyLTE_OfTxLTE)
@@ -139,7 +131,7 @@ if ~isempty(stationManagement.transmittingIDsLTE)
         BRtx = stationManagement.BRid(idVtx);
         %hyeonji - transmittingID의 BRid에서 RRP만큼 떨어진 곳으로 예약
         %예약된 거 있나 비워주는 작업이 필요할까?
-        stationManagement.ReserveRRPMatrix(BRtx,stationManagement.generationInterval(idVtx),idVtx) = 1;
+        stationManagement.ReserveRRPMatrix(BRtx,timeManagement.generationInterval(idVtx)*10,idVtx) = 1; %일단 0.1~1까지 0.1 단위로만 된다 생각해보자 - hj
         for indexNeighborsOfVtx = 1:length(stationManagement.neighborsIDLTE(indexVtxLte,:)) %transmittingID의 이웃들 갯수 - hj
            idVrx = stationManagement.neighborsIDLTE(indexVtxLte,indexNeighborsOfVtx); %transmittingID의 neighborsID - hj
            if idVrx<=0 %neighborsID가 없으면 break - hj
@@ -228,10 +220,10 @@ for indexSensingV = 1:Nscheduled
     %        - RSRP threshold를 3dB씩 증가시키며 반복한다.
     
     %hyeonji
-    knownRRPMatrixScheduled = sum(stationManagement.updateReserveMatrix(:,:,scheduledID(indexSensingV)),2)';
+%     knownRRPMatrixScheduled = sum(stationManagement.ReserveRRPMatrix(:,:,scheduledID(indexSensingV)),2)';
     
     % The knownUsedMatrix of the scheduled users is obtained
-%     knownUsedMatrixScheduled = stationManagement.knownUsedMatrixLTE(:,scheduledID(indexSensingV))';
+    knownUsedMatrixScheduled = stationManagement.knownUsedMatrixLTE(:,scheduledID(indexSensingV))';
 
     % Create random permutation of the column indexes of sensingMatrix in
     % order to avoid the ascending order on the indexes of cells with the
@@ -240,12 +232,12 @@ for indexSensingV = 1:Nscheduled
     rpMatrix = randperm(Nbeacons);
     
     %hyeonji
-    knownRRPMatrixScheduledPerm = knownRRPMatrixScheduled(rpMatrix);
+%     knownRRPMatrixScheduledPerm = knownRRPMatrixScheduled(rpMatrix);
 
     % Build matrix made of random permutations of the column indexes
     % Permute sensing matrix
     sensingMatrixPerm = sensingMatrixScheduled(rpMatrix);
-%     knownUsedMatrixPerm = knownUsedMatrixScheduled(rpMatrix);
+    knownUsedMatrixPerm = knownUsedMatrixScheduled(rpMatrix);
 
     % Now perform sorting and relocation taking into account the threshold on RSRP
     % Please note that the sensed power is on a per MHz resource basis,
@@ -256,9 +248,9 @@ for indexSensingV = 1:Nscheduled
     while powerThreshold < 100
         % If the number of acceptable BRs is lower than MBest,
         % powerThreshold is increased by 3 dB
-%         usableBRs = ((sensingMatrixPerm*0.015)<powerThreshold) | ((sensingMatrixPerm<inf) & (knownUsedMatrixPerm<1));
+        usableBRs = ((sensingMatrixPerm*0.015)<powerThreshold) | ((sensingMatrixPerm<inf) & (knownUsedMatrixPerm<1));
         %hyeonji
-        usableBRs = ((sensingMatrixPerm*0.015)<powerThreshold) | ((sensingMatrixPerm<inf) & (knownRRPMatrixScheduledPerm<1));
+%         usableBRs = ((sensingMatrixPerm*0.015)<powerThreshold) | ((sensingMatrixPerm<inf) & (knownRRPMatrixScheduledPerm<1));
         if sum(usableBRs) < MBest
             powerThreshold = powerThreshold * 2;
         else

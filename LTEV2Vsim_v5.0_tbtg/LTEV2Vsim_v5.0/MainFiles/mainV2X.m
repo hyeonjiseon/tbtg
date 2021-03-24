@@ -163,7 +163,10 @@ while timeManagement.timeNow < simParams.simulationTime
             %printDebugImage('New packet 11p',timeManagement,stationManagement,positionManagement,simParams,simValues);
         end
 
-        timeManagement.timeNextPacket(idEvent) = timeManagement.timeNow + timeManagement.beaconPeriod(idEvent);
+%         timeManagement.timeNextPacket(idEvent) = timeManagement.timeNow + timeManagement.beaconPeriod(idEvent);
+        %hyeonji
+%         timeManagement.timeNextPacket(idEvent) = timeManagement.timeNow + max(timeManagement.generationInterval(idEvent),timeManagement.dcc_minInterval(idEvent));
+        timeManagement.timeNextPacket(idEvent) = timeManagement.timeNow +timeManagement.generationInterval(idEvent);
         timeManagement.timeLastPacket(idEvent) = timeManagement.timeNow;
          
         % CASE B+C: either a backoff or a transmission concludes

@@ -101,10 +101,10 @@ end
 %hyeonji - 5.4v cbrUpdateLTE 뒷부분에 필요해서 추가
 % [dcc_active]
 % Duration of the interval for the CBR calculation [s]
-[simParams,varargin] = addNewParam(simParams,'dcc_active',true,'If DCC is enabled','bool',fileCfg,varargin{1});
-if simParams.dcc_active && ~simParams.cbrActive
-    error('Error: DCC requires "simParams.cbrActive" to be set to true');
-end
+% [simParams,varargin] = addNewParam(simParams,'dcc_active',true,'If DCC is enabled','bool',fileCfg,varargin{1});
+% if simParams.dcc_active && ~simParams.cbrActive
+%     error('Error: DCC requires "simParams.cbrActive" to be set to true');
+% end
 
 % [cbrSensingInterval]
 % Duration of the interval for the CBR calculation [s]

@@ -158,6 +158,7 @@ if simParams.typeOfScenario==2 && outParams.printPRRmap % Only traffic traces
     simValues.YmapFloor = floor(simValues.Ymap);
 end
 
+
 % Computation of the channel gain
 % 'dUpdate': vector used for the calculation of correlated shadowing
 dUpdate = zeros(outputValues.Nvehicles,outputValues.Nvehicles);
@@ -181,6 +182,13 @@ sinrManagement.P_RX_MHz =  ( (phyParams.P_ERP_MHz_LTE(stationManagement.activeID
 % initially set to the first packet generation
 timeManagement.timeNextEvent = Inf * ones(simValues.maxID,1);
 timeManagement.timeNextEvent(simValues.IDvehicle) = timeManagement.timeNextPacket(simValues.IDvehicle);
+
+%hyeonji - generationInterval
+if simParams.typeOfScenario~=2 % Not traffic trace
+    timeManagement.generationInterval = generationPeriodFromSpeed(simValues.v,appParams);
+else
+    timeManagement.generationInterval = appParams.averageTbeacon * ones(simValues.maxID,1);
+end
 
 %% Initialization of variables related to transmission in IEEE 802.11p
 % 'timeNextTxRx11p' stores the instant of the next backoff or
@@ -273,6 +281,7 @@ if simParams.technology~=1 % if not only LTE
 
 end % end of not only LTE
 
+
 %% Initialization of variables related to transmission in IEEE 802.11p
 % Initialize the beacon resource used by each vehicle
 stationManagement.BRid = -2*ones(simValues.maxID,1);
@@ -292,10 +301,11 @@ if simParams.technology ~= 2 % not only 11p
         stationManagement.scheduledReassignLTE = randi(stationManagement.NScheduledReassignLTE,simValues.maxID,1);
     end
 
-    if simParams.BRAlgorithm==18
-        %hyeonji - 왠지 여기에 추가하고 싶음
-        stationManagement.ReserveRRPMatrix = zeros(appParams.NbeaconsT*appParams.NbeaconsF, 
+    if simParams.BRAlgorithm==18    
         
+        %hyeonji - 왠지 여기에 추가하고 싶음 RRP가 실수로 나올 거라서 미리 칸을 정해줄 수 없음
+        stationManagement.ReserveRRPMatrix = zeros(appParams.NbeaconsT*appParams.NbeaconsF,10,simValues.maxID);
+        stationManagement.knownRRPMatrix = zeros(appParams.NbeaconsT*appParams.NbeaconsF,10,simValues.maxID-1);
         
         % Find min and max values for random counter (BRAlgorithm=18)
         [simParams.minRandValueMode4,simParams.maxRandValueMode4] = findRandValueMode4(appParams.averageTbeacon,simParams);
