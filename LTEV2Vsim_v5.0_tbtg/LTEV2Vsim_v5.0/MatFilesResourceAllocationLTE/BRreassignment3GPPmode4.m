@@ -192,6 +192,7 @@ for indexSensingV = 1:Nscheduled
     
     % Select the sensing matrix only for those vehicles that perform reallocation
     % and calculate the average of the measured power over the sensing window
+    %각 BRid에 해당하는 평균 sensing값 [0 0 0 ]- hj
     sensingMatrixScheduled = sum(stationManagement.sensingMatrixLTE(:,:,scheduledID(indexSensingV)),1)/length(stationManagement.sensingMatrixLTE(:,1,1));
     % "sensingMatrixScheduled" is a '1 x NbeaconIntervals' vector
         
@@ -220,7 +221,7 @@ for indexSensingV = 1:Nscheduled
     %        - 이 때, selection window에 있는 모든 CSRs의 20% 이상을 포함하지 않는다면
     %        - RSRP threshold를 3dB씩 증가시키며 반복한다.
     
-    %hyeonji - BR에 해당하는 RRP 있던 것 더함
+    %hyeonji - scheduledID가 사용할 BR에 해당하는 RRP 체크 값 더함 [0;0;0] -> [0 0 0]
     knownRRPMatrixScheduled = sum(stationManagement.knownRRPMatrix(:,:,scheduledID(indexSensingV)),2)';
     
     % The knownUsedMatrix of the scheduled users is obtained
@@ -230,9 +231,12 @@ for indexSensingV = 1:Nscheduled
     % order to avoid the ascending order on the indexes of cells with the
     % same value (sort effect) -> minimize the probability of choosing the same
     % resource
+    %같은 값(정렬 효과)을 가진 셀 인덱스의 오름차순을 피하기 위해 SensingMatrix 열 인덱스의 임의 순열 생성->
+    %동일한 리소스를 선택할 확률 최소화 - hj
     rpMatrix = randperm(Nbeacons);
     
-    %hyeonji
+    %hyeonji - 이거 왜 섞는거니?? 그 BR 쓴다는 의미를 섞어버리면 어캄?? 어차피 갯수는 같으니까 순서를 섞어서 어떤
+    %정렬 효과를 줄이겠다는 것 같은데..
     knownRRPMatrixScheduledPerm = knownRRPMatrixScheduled(rpMatrix);
 
     % Build matrix made of random permutations of the column indexes
