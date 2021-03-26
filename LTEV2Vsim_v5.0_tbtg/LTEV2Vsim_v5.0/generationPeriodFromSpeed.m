@@ -18,10 +18,11 @@ end %이것들은 generation period를 속도가 적게 변할 땐 어느 정도
 generationInterval=CPeriod;
 
 if ~strcmp(appParams.camDiscretizationType, 'null')    
-	Paugmented=CPeriod.*(1+appParams.camDiscretizationIncrease./100);
+	Paugmented=CPeriod.*(1+appParams.camDiscretizationIncrease./100); %값에서 20%증가시킴
     for pp=1:length(Paugmented)
-        [~,j]=min(abs(Paugmented(pp)-Possible));
+        [~,j]=min(abs(Paugmented(pp)-Possible)); %증가된Period에서 Possible을 뺐을 때 절댓값이 가장 작은 것, 즉 가장 가까운 possible - hj
         generationInterval(pp)=Possible(j).*(Possible(j)<=Paugmented(pp))+Possible(max(j-1,1)).*(Possible(j)>Paugmented(pp));
+        %Possible이 증가된Period보다 작으면 가장 가까웠던 Possible값, 크면 하나 더 작은 Possible값 - hj    
     end
 end
 

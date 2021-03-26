@@ -67,14 +67,12 @@ stationManagement.sensingMatrixLTE(:,BRids_currentSF,:) = circshift(stationManag
 % These values will be hereafter filled with the latest measurements
 
 % Update of the sensing matrix
-if ~isempty(stationManagement.transmittingIDsLTE)   
-    
-    if isempty(sinrManagement.sensedPowerByLteNo11p)
-                
+if ~isempty(stationManagement.transmittingIDsLTE)       
+    if isempty(sinrManagement.sensedPowerByLteNo11p)                
+        %transmittingID가 전송하는 걸 다른 차랑들이 어떤 power로 받는 지 - hj
         sensedPowerCurrentSF = sensedPowerLTE(stationManagement,sinrManagement,appParams,phyParams);
     else        
-        sensedPowerCurrentSF = sinrManagement.sensedPowerByLteNo11p;
-        
+        sensedPowerCurrentSF = sinrManagement.sensedPowerByLteNo11p;        
     end
 
     % If the received power measured on that resource is lower than
@@ -86,8 +84,8 @@ if ~isempty(stationManagement.transmittingIDsLTE)
 end
 
 %hyeonji - 기존 RRI 부분이니까 다시 작성해야 함
-% Cycle that updates per each vehicle and BR the knownUsedMatrix
-% knownUsedMatrix = zeros(appParams.Nbeacons,simValues.maxID);
+% % Cycle that updates per each vehicle and BR the knownUsedMatrix
+% % knownUsedMatrix = zeros(appParams.Nbeacons,simValues.maxID);
 % if ~isempty(stationManagement.transmittingIDsLTE)     
 %     for i = 1:length(stationManagement.indexInActiveIDsOnlyLTE_OfTxLTE)
 %         idVtx = stationManagement.transmittingIDsLTE(i);
@@ -293,9 +291,17 @@ end
 % Reduce the knownUsedMatrix by 1 (not a problem if it goes below 0) for
 % those vehicles that have checked in this subframe if it is time to change
 % allocation
+%할당을 변경할 때가되면 이 서브 프레임에서 체크인 한 차량에 대해 knownUsedMatrix를 1으로 줄입니다.(0 미만으로 내려 가면 문제가되지
+%않음) - hj
 % NOTE: the function repmat(V,n,m) creates n copies in the 1st dimension 
 % and m copies in the 2nd dimension of the vector V
-stationManagement.knownUsedMatrixLTE = stationManagement.knownUsedMatrixLTE - repmat(inTheLastSubframe',length(stationManagement.knownUsedMatrixLTE(:,1)),1);
+%repmat (V, n, m) 함수는 벡터 V의 1 차원에 n 개의 복사본을 생성하고 2 차원에 m 개의 복사본을 생성합니다. - hj
+%이게뭐지?? 뭐하는 애지?? 일단 영준이는 주석처리 했었음 - hj
+%repmat은 제일 앞의 벡터를 n*m만큼 복사한 것 - hj
+%test = [1 2; 3 4]; repmat(test, 2,1) = [1 2;3 4;1 2;3 4]- hj
+% stationManagement.knownUsedMatrixLTE = stationManagement.knownUsedMatrixLTE - repmat(inTheLastSubframe',length(stationManagement.knownUsedMatrixLTE(:,1)),1);
+%length(stationManagement.knownUsedMatrixLTE(:,1)) = 100 - hj
+
 
 % The channel busy ratio is calculated, if needed, every subframe for those
 % nodes that have a packet generated in the subframe that just ended

@@ -88,40 +88,40 @@ end
 %hyeonji - 기존 RRI 부분이니까 다시 작성해야 함
 % Cycle that updates per each vehicle and BR the knownUsedMatrix
 % knownUsedMatrix = zeros(appParams.Nbeacons,simValues.maxID);
-% if ~isempty(stationManagement.transmittingIDsLTE)     
-%     for i = 1:length(stationManagement.indexInActiveIDsOnlyLTE_OfTxLTE)
-%         idVtx = stationManagement.transmittingIDsLTE(i);
-%         indexVtxLte = stationManagement.indexInActiveIDsOnlyLTE_OfTxLTE(i);
-%         BRtx = stationManagement.BRid(idVtx);
-%         for indexNeighborsOfVtx = 1:length(stationManagement.neighborsIDLTE(indexVtxLte,:)) %transmittingID의 이웃들 갯수 - hj
-%            idVrx = stationManagement.neighborsIDLTE(indexVtxLte,indexNeighborsOfVtx); %transmittingID의 neighborsID - hj
-%            if idVrx<=0 %neighborsID가 없으면 break - hj
-%                break;
-%            end
-%            % IF the SCI is transmitted in this subframe AND if it is correctly
-%            % received AND the corresponding value of 'knownUsedMatrix' is lower
-%            % than what sent in the SCI (means the value is not updated)
-%            % THEN the corresponding value of 'knownUsedMatrix' is updated
-%            % 이 subframe에 sci가 전송되어 정확하게 수신되었다 &&
-%            % knownUsedMatrix의 (transmittingID, neigborsID)가 transmittingID의 RC값보다 작다
-%            % -> knowUsedMatrix를 transmittingID의 RC값으로 update한다. - hj
-%            if stationManagement.correctSCImatrixLTE(i,indexNeighborsOfVtx) == 1 && ...
-%                   stationManagement.knownUsedMatrixLTE(BRtx,idVrx) < stationManagement.resReselectionCounterLTE(idVtx)
-%               %i번째 tx의 indexNeighborsOfVtx번째 neighbors에 sci가 수신되고 
-%               %knownUsedMatrix(txID의 BRid, neighborsID)가 tx의 ReselectionCounter보다 작으면 - hj
-%               %이웃이 쏜 SCI가 해독됐고, 내 이웃들이 현재 쏘고 있는 자원칸을 이웃들이 얼마나 더 쓸 건지,
-%               %이웃이 계쏙 쓰면 그것을 제외하기 위함 - jh
-%                stationManagement.knownUsedMatrixLTE(BRtx,idVrx) = stationManagement.resReselectionCounterLTE(idVtx);
-%                %knownUsedMatrix(txID의 BRid, neighborsID)에 그 RC값 update - hj
-%            % NOTE: the SCI is here assumed to advertise the current value of the reselection
-%            % counter, which is an approximation of what in TS 36.213, Table 14.2.1-2
-%            elseif stationManagement.correctSCImatrixLTE(i, indexNeighborsOfVtx) == 0 
-%                stationManagement.knownUsedMatrixLTE(BRtx, idVrx) = 0;
-%                %이 subframe에 sci가 전송되어 정확하게 수신되지 않았으면 knownUsedMatrix값을 0으로 둔다. - hj
-%            end
-%         end
-%     end
-% end
+if ~isempty(stationManagement.transmittingIDsLTE)     
+    for i = 1:length(stationManagement.indexInActiveIDsOnlyLTE_OfTxLTE)
+        idVtx = stationManagement.transmittingIDsLTE(i);
+        indexVtxLte = stationManagement.indexInActiveIDsOnlyLTE_OfTxLTE(i);
+        BRtx = stationManagement.BRid(idVtx);
+        for indexNeighborsOfVtx = 1:length(stationManagement.neighborsIDLTE(indexVtxLte,:)) %transmittingID의 이웃들 갯수 - hj
+           idVrx = stationManagement.neighborsIDLTE(indexVtxLte,indexNeighborsOfVtx); %transmittingID의 neighborsID - hj
+           if idVrx<=0 %neighborsID가 없으면 break - hj
+               break;
+           end
+           % IF the SCI is transmitted in this subframe AND if it is correctly
+           % received AND the corresponding value of 'knownUsedMatrix' is lower
+           % than what sent in the SCI (means the value is not updated)
+           % THEN the corresponding value of 'knownUsedMatrix' is updated
+           % 이 subframe에 sci가 전송되어 정확하게 수신되었다 &&
+           % knownUsedMatrix의 (transmittingID, neigborsID)가 transmittingID의 RC값보다 작다
+           % -> knowUsedMatrix를 transmittingID의 RC값으로 update한다. - hj
+           if stationManagement.correctSCImatrixLTE(i,indexNeighborsOfVtx) == 1 && ...
+                  stationManagement.knownUsedMatrixLTE(BRtx,idVrx) < stationManagement.resReselectionCounterLTE(idVtx)
+              %i번째 tx의 indexNeighborsOfVtx번째 neighbors에 sci가 수신되고 
+              %knownUsedMatrix(txID의 BRid, neighborsID)가 tx의 ReselectionCounter보다 작으면 - hj
+              %이웃이 쏜 SCI가 해독됐고, 내 이웃들이 현재 쏘고 있는 자원칸을 이웃들이 얼마나 더 쓸 건지,
+              %이웃이 계쏙 쓰면 그것을 제외하기 위함 - jh
+               stationManagement.knownUsedMatrixLTE(BRtx,idVrx) = stationManagement.resReselectionCounterLTE(idVtx);
+               %knownUsedMatrix(txID의 BRid, neighborsID)에 그 RC값 update - hj
+           % NOTE: the SCI is here assumed to advertise the current value of the reselection
+           % counter, which is an approximation of what in TS 36.213, Table 14.2.1-2
+           elseif stationManagement.correctSCImatrixLTE(i, indexNeighborsOfVtx) == 0 
+               stationManagement.knownUsedMatrixLTE(BRtx, idVrx) = 0;
+               %이 subframe에 sci가 전송되어 정확하게 수신되지 않았으면 knownUsedMatrix값을 0으로 둔다. - hj
+           end
+        end
+    end
+end
 
 %hyeonji - packetInterval에 따라서 바뀌는 RRP로 예약
 if ~isempty(stationManagement.transmittingIDsLTE)     
@@ -235,7 +235,8 @@ for indexSensingV = 1:Nscheduled
     %동일한 리소스를 선택할 확률 최소화 - hj
     rpMatrix = randperm(Nbeacons);
     
-    %hyeonji - 이거 왜 섞는거니??
+    %hyeonji - 이거 왜 섞는거니?? 그 BR 쓴다는 의미를 섞어버리면 어캄?? 어차피 갯수는 같으니까 순서를 섞어서 어떤
+    %정렬 효과를 줄이겠다는 것 같은데..
     knownRRPMatrixScheduledPerm = knownRRPMatrixScheduled(rpMatrix);
 
     % Build matrix made of random permutations of the column indexes
@@ -292,9 +293,18 @@ end
 % Reduce the knownUsedMatrix by 1 (not a problem if it goes below 0) for
 % those vehicles that have checked in this subframe if it is time to change
 % allocation
+%할당을 변경할 때가되면 이 서브 프레임에서 체크인 한 차량에 대해 knownUsedMatrix를 1으로 줄입니다.(0 미만으로 내려 가면 문제가되지
+%않음) - hj
 % NOTE: the function repmat(V,n,m) creates n copies in the 1st dimension 
 % and m copies in the 2nd dimension of the vector V
+%repmat (V, n, m) 함수는 벡터 V의 1 차원에 n 개의 복사본을 생성하고 2 차원에 m 개의 복사본을 생성합니다. - hj
+%이게뭐지?? 뭐하는 애지?? - hj
 stationManagement.knownUsedMatrixLTE = stationManagement.knownUsedMatrixLTE - repmat(inTheLastSubframe',length(stationManagement.knownUsedMatrixLTE(:,1)),1);
+%length(stationManagement.knownUsedMatrixLTE(:,1)) = 100 - hj
+whatis = repmat(inTheLastSubframe',length(stationManagement.knownUsedMatrixLTE(:,1)),1);
+
+%hyeonji - 일단 뭐 만들어 줄까
+stationManagement.knownRRPMatrix = stationManagement.knownRRPMatrix - repmat(inTheLastSubframe', length(stationManagement.knownRRPMatrix(:,
 
 % The channel busy ratio is calculated, if needed, every subframe for those
 % nodes that have a packet generated in the subframe that just ended

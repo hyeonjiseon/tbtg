@@ -29,7 +29,7 @@
     뒤에 RRI가 걱정되기도 해서 새로 시뮬레이터를 뜯어봐야 한다는 리스크도 좀 줄일 수 없을까 했는데 
     영준이가 이 정도는 해야 한다고 하니까 이대로 용기 내어 가 보자.
 
-2. 나도 같은 속도 유지했을 때로 실험하면 되는데 이때 메시지가 한 간격밖에 안 나옴(3/21-3/22)
+2. 나도 같은 속도 유지했을 때로 실험하면 되는데 이때 메시지가 한 간격밖에 안 나옴(3/21-3/24)
  - 매번 속도를 바꿔가면서 실험을 해야 할 것 같음
  - sci에 예약하기 위한 필드 RRI를 현재 속도에 따라 다음 메시지 언제 나오는 지 알고 예약
    => aperiodic한 것은 속도 바뀌면 나타나게 되는 것.
@@ -44,20 +44,37 @@
     NbeaconsT를 interval에 따라서 바꿔줘야 할 것 같다. 일단 interval과 RRI 사이의 관계를 보고 조절해 보자.
     interval은 timeEvent가 timeNextPacket(idEvent)일 때의 주기를 만들어 주는 것이고, 
     SPS는 mainLTEsubframeEnds 안에 들어있는 함수로서, 그 안에서 100ms 단위로 allocate 해 주면서 RC값 감소시키고 다 감소되면 reselection해 준다.
-  - 이게 아니라 knownUsedMatrix가 RRI를 나타내는 것이었다.
-
+  - 이게 아니라 knownUsedMatrix가 elseif를 추가하면 RRI를 나타낼 수 있다고 한다. 정말???????!!???
  2) v5.0 knownUsedmatrix쪽 고쳐서 RRI
   - generationInterval 정해지면 RRP 실수인 거 초기화시켜주기..
- 	%hyeonji - 왠지 여기에 추가하고 싶음 RRP가 실수로 나올 거라서 미리 칸을 정해줄 수 없음
-        stationManagement.ReserveRRPMatrix = zeros(appParams.NbeaconsT*appParams.NbeaconsF,,simValues.maxID);
-  - RRI가 정수형의 배수여야 index에 넣는데.. 이게 실수라서 어떻게 하지? 논문에서 확실히 실수형으로 갔는 지 확인해보자
-  - 영준이가 RRI를 0.1부터 1까지 0.1 단위로 하라고 했다. 이 부분에 대해서 교수님과 이야기해 봐야 겠다.
-  - 내일 아침까지 진짜 잘 돌아가는 지 확인하기
+  - RRI가 정수형의 배수여야 index에 넣는데.. 이게 실수라서 어떻게 하지? 
+    영준이가 RRI를 0.1부터 1까지 0.1단위로 하라고 했다. 교수님도 이렇게 하라고 하심
+ 3) RC counter가 마음대로 떨어지지 않는 지 확인(3/26)
+  - timeNextPacket이여도 RRP가 0.1s보다 크면 안 내려가야 하는 걸 말하는 듯
+ 4) aperiodic으로 보낼 때가 아닌데 BRid 같다고보내는 지 확인
+
+3. 일정한 주행 속도를 4lane에 다르게 설정하기(3/25-3/26)
+ 1) 주행속도를 적절히 셋팅해서 이게 바꾼 sps랑 원래 sps에서 performance가 좋아지는 지 확인해야 할 것 같다.
+   - 고속도로의 최고 속도는 편도 1차로 시속 80㎞, 편도 2차로 이상 시속 100㎞나 시속 110㎞ 등 세 가지다.
+     (http://www.hani.co.kr/arti/economy/economy_general/684904.html#csidx035795a9667b6d3a3ebb412f77f0632) 
+   - 고속도로라고 이 속도들을 다 맞춰서 달리지는 않는다. 정체 구간은 38km/h인 곳도 있다. 
+     이렇게 차이가 큰 건 4번에서 정체 구간인 경우를 잡고 실험해 보면 좋겠다.
+
+   - 70km/h일 땐 generationInterval 0.2s, 80km/h일 때 generationInterval 0.2s,
+     90km/h일 때 generationInterval 0.1s, 100km/h일 때 generationInterval 0.1s, 110km/h 일 때 generationInterval 0.1s
+     일단 무난하게 [80,90,100,110]으로 해 보고 잘 되면 [70,80,90,100]으로 또 돌려보자
+  - 밀도는 200대/km 로 시작해서 한 lane 당 50대씩 있다고 생각하면 되겠다.
+  
+
+ 2) PRR 비교하기
+ 3) PIR 비교하기
+ 4) no show 문제를 극대화해서 보려면 200vehicles/km부터 그 이상을 봐야 할 듯
+ 5) 저번에 CBR얘기가 나왔는데 이것도 같이 보면 좋을 듯
+
+4. 한 lane 내에서도 속도를 일정하게 하지 말고, 그 일정한 속도를 평균으로 하는 전후 값들을 지정해 주어 변동을 주었을 때도 성능 향상 있는 지 확인
 
 
-3. 속도를 일정하게 하지 말고 실제 주행 데이터에 따라서 변동을 주었을 때도 잘 되는 지 확인(3/23-3/24)
-
-4. 논문 읽는 법
+5. 논문 읽는 법
  1) motivation
  2) problem definition
  3) solution approach
