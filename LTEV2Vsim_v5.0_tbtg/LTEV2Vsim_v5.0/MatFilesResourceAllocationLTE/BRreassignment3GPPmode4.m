@@ -139,7 +139,11 @@ if ~isempty(stationManagement.transmittingIDsLTE)
            if stationManagement.correctSCImatrixLTE(i,indexNeighborsOfVtx) == 1 % 이 subframe에 sci가 전송되어 정확하게 수신되었다
                %hyeonji - 속도에 따른 RRP만큼 떨어진 newBRid, RRP, neighborsID에 1 표시한 RRPMatrix                   
                [BR, RRP] = find(stationManagement.ReserveRRPMatrix(:,:,idVtx)==1); %송신자 입장에서 예약한 게 수신됨 
-               stationManagement.knownRRPMatrix(BR, RRP, idVrx) = 1; %수신자 입장에서 RRP 이후 같은 위치 BRid에 체크         
+               stationManagement.knownRRPMatrix(BR, RRP, idVrx) = 1; %수신자 입장에서 RRP 이후 같은 위치 BRid에 체크
+               %hyeonji - BRid 같다고 RC값 떨어뜨리면 뛰어 넘었을 때도 떨어지게 되니까 추가된 만큼 더해주기
+               if RRP > 1
+                   stationManagement.resReselectionCounterLTE(idVtx) = stationManagement.resReselectionCounterLTE(idVtx) + (RRP - 1);
+               end
            end
         end
     end
