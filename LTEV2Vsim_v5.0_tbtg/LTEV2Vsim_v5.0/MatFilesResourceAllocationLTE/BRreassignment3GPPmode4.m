@@ -142,10 +142,11 @@ if ~isempty(stationManagement.transmittingIDsLTE)
                stationManagement.knownRRPMatrix(BR, RRP, idVrx) = 1; %수신자 입장에서 RRP 이후 같은 위치 BRid에 체크                            
            end
         end
-        %hyeonji - BRid 같다고 RC값 떨어뜨리면 뛰어 넘었을 때도 떨어지게 되니까 추가된 만큼 더해주기      
-        if RRP > 1
-           stationManagement.resReselectionCounterLTE(idVtx) = stationManagement.resReselectionCounterLTE(idVtx) + (RRP - 1);
-        end
+%         %hyeonji - BRid 같다고 RC값 떨어뜨리면 뛰어 넘었을 때도 떨어지게 되니까 추가된 만큼 더해주기      
+%                    이
+%         if RRP > 1
+%            stationManagement.resReselectionCounterLTE(idVtx) = stationManagement.resReselectionCounterLTE(idVtx) + (RRP - 1);
+%         end
     end
 end
 
@@ -154,6 +155,11 @@ end
 % Calculate scheduledID
 inTheLastSubframe = -1*ones(length(subframeNextPacket),1);
 %hyeonji - 매 패킷 생성 시 RC값 떨어지니까 패킷이 안 생기게 해야 할 것 같다
+%hyeonji - 100ms 단위일 땐 모든 차량이 100ms 안에 한 번씩 전송하니까 이 전송들이 다 끝나고 나면 한번에 RC값을
+%내려줬다. 이게 언제 뛰어 넘어야 한다고 기준을 잡아줘야 할 것 같은데..
+testxID = stationManagement.transmittingIDsLTE;
+[BR, RRP] = find(stationManagement.ReserveRRPMatrix(:,:,idVtx)==1);
+%[BRtest, RRPtest] = stationManabement.knownRRPMatrix
 inTheLastSubframe(activeIdsLTE) = (subframeNextPacket(activeIdsLTE)==currentT);
 
 % Update resReselectionCounter
