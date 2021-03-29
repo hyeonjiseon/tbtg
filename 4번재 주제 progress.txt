@@ -61,6 +61,7 @@
      이건 굳이 RRPMatrix를 쓰지 않아도 속도에 따라서 알 수 있는 값이다.    
  4) aperiodic으로 보낼 때가 아닌데 BRid 같다고 transmitting 하는 지 확인(3/29-3/30)
   - transmittingID는 subframeStarts.m에서 정해진다. 이 때도 inTheLastSubframe에서 했던 것처럼 해 주면 될 것 같다.
+  - 내일까지 검증해보자:D
 
 
 3. 일정한 주행 속도를 4lane에 다르게 설정하기(3/25-3/26, 3/30-3/31)

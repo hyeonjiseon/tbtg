@@ -310,6 +310,8 @@ if simParams.technology ~= 2 % not only 11p
         %hyeonji - RC값 건너뛰기 위함
         stationManagement.RRItx = int8(timeManagement.generationInterval*10);
         stationManagement.CountRRI = stationManagement.RRItx;
+        %hyeonji - transmittingID 건너뛰기 위함
+        stationManagement.RRIcount = stationManagement.RRItx;
         
         % Find min and max values for random counter (BRAlgorithm=18)
         [simParams.minRandValueMode4,simParams.maxRandValueMode4] = findRandValueMode4(appParams.averageTbeacon,simParams);
