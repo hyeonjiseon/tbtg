@@ -54,7 +54,7 @@ else %hyeonji - 100ms 이후부터는 RRI가 길면 뛰어넘기
             if stationManagement.RRIcount(i) > 1
                 stationManagement.RRIcount(i) = stationManagement.RRIcount(i) - 1;
             elseif stationManagement.RRIcount(i) == 1
-                stationManagement.transmittingIDsLTE2 = i;
+                stationManagement.transmittingIDsLTE = i;
                 stationManagement.RRIcount(i) = stationManagement.RRItx(i);
             end
         end

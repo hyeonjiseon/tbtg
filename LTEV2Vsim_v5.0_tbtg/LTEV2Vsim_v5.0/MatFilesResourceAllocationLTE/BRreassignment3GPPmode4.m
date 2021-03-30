@@ -164,13 +164,19 @@ inTheLastSubframe(activeIdsLTE) = (subframeNextPacket(activeIdsLTE)==currentT);
 
 %hyeonji - 매 패킷 생성 시 RC값 떨어지니까 패킷이 안 생기게 해야 할 것 같다
 %hyeonji - 100ms 단위일 땐 모든 차량이 100ms 안에 한 번씩 전송하니까 이 전송들이 다 끝나고 나면 한번에 RC값을 내려줬다.
-%          이게 언제 뛰어 넘어야 한다고 기준을 잡아줘야 할 것 같은데.. 전송할 때 RRP를
-for i = 1:length(activeIdsLTE)    
-    if stationManagement.CountRRI(i) > 1
-        stationManagement.CountRRI(i) = stationManagement.CountRRI(i) - 1;
-    elseif stationManagement.CountRRI(i) == 1
-        stationManagement.resReselectionCounterLTE(i) = stationManagement.resReselectionCounterLTE(i) - inTheLastSubframe(i);
-        stationManagement.CountRRI(i) = stationManagement.RRItx(i);
+%          이게 언제 뛰어 넘어야 한다고 기준을 잡아줘야 할 것 같은데..
+if timeManagement.elapsedTime_subframes <=100
+    stationManagement.resReselectionCounterLTE(activeIdsLTE) = stationManagement.resReselectionCounterLTE(activeIdsLTE)-inTheLastSubframe(activeIdsLTE);
+else
+    for j = 1:length(activeIdsLTE)    
+        if inTheLastSubframe(j) == 1
+            if stationManagement.CountRRI(j) > 1
+                stationManagement.CountRRI(j) = stationManagement.CountRRI(j) - 1;
+            elseif stationManagement.CountRRI(j) == 1
+                stationManagement.resReselectionCounterLTE(j) = stationManagement.resReselectionCounterLTE(j) - inTheLastSubframe(j);
+                stationManagement.CountRRI(j) = stationManagement.RRItx(j);
+            end
+        end
     end
 end
 
