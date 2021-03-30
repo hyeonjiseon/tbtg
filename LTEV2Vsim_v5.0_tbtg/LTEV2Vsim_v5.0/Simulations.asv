@@ -9,7 +9,8 @@ clc          % Clear the command window
 %density = [50, 100, 200]; %density(i)
 
 %for i = 1:length(density)
-    LTEV2Vsim('BenchmarkPoisson.cfg','simulationTime',10, 'rho', 200,...
-        'BRAlgorithm',18, 'camDiscretizationType', 'allSteps', 'cV', 70);
+    LTEV2Vsim('BenchmarkPoisson.cfg','simulationTime',10, 'rho', 40,...
+        'BRAlgorithm',18, 'camDiscretizationType', 'allSteps', 'cV', 72,...
+        'NLanes', 4, 'roadWidth', 3.5);
 %end
 %'MCS_LTE', 7, 'printCBR', true
