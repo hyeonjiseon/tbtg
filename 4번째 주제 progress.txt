@@ -67,42 +67,47 @@
     전송 후에 RC값이 떨어져야 하는 거 아닌가? 그냥 100ms 안에만 이루어지면 되는 건가????????????????????
    --> lte에서도 패킷 생성될 때 떨어지는 거라서 괜찮다
 
-
 3. 일정한 주행 속도를 4lane에 다르게 설정하기(3/25-3/26, 3/30, 4/1)
- 1) 주행속도를 적절히 셋팅해서 이게 바꾼 sps랑 원래 sps에서 performance가 좋아지는 지 확인해야 할 것 같다.
-   - 고속도로의 최고 속도는 편도 1차로 시속 80㎞, 편도 2차로 이상 시속 100㎞나 시속 110㎞ 등 세 가지다.
-     (http://www.hani.co.kr/arti/economy/economy_general/684904.html#csidx035795a9667b6d3a3ebb412f77f0632) 
+ 1) 고속도로의 최고 속도는 편도 1차로 시속 80㎞, 편도 2차로 이상 시속 100㎞나 시속 110㎞ 등 세 가지다.
+    (http://www.hani.co.kr/arti/economy/economy_general/684904.html#csidx035795a9667b6d3a3ebb412f77f0632) 
    - 고속도로라고 이 속도들을 다 맞춰서 달리지는 않는다. 정체 구간은 38km/h인 곳도 있다. 
      이렇게 차이가 큰 건 4번에서 정체 구간인 경우를 잡고 실험해 보면 좋겠다.
-   --> lane은 4+4로 해서 congestion control도 지켜볼 수 있게 하기
-   - 그림으로 띄워 보니 위에 4 lane은 왼쪽으로, 아래 4 lane은 오른쪽으로 감
-   - 근데 한 lane에 있는 차량의 갯수가 일정하지 않아서 임의로 지정을 해 줘야 하지 않을까 싶다.
-
-   - 70km/h일 땐 generationInterval 0.2s, 80km/h일 때 generationInterval 0.2s,
+    --> lane은 4+4로 해서 congestion control도 지켜볼 수 있게 하기
+ 2) 70km/h일 땐 generationInterval 0.2s, 80km/h일 때 generationInterval 0.2s,
      90km/h일 때 generationInterval 0.1s, 100km/h일 때 generationInterval 0.1s, 110km/h 일 때 generationInterval 0.1s
      일단 무난하게 [80,90,100,110]으로 해 보고 잘 되면 [70,80,90,100]으로 또 돌려보자
     --> 교수님이 0.1, 0.2, 0.3, 0.4s로 나오게 해 보라고 하셨다.
-  - 밀도는 200대/km 로 시작해서 한 lane 당 50대씩 있다고 생각하면 되겠다.
-  
+ 3) 그림으로 띄워 보니 위에 4 lane은 왼쪽으로, 아래 4 lane은 오른쪽으로 감
+   - 근데 한 lane에 있는 차량의 갯수가 일정하지 않아서 임의로 지정을 해 줘야 하지 않을까 싶다.
+     밀도는 200대/km 로 시작해서 한 lane 당 50대씩 있다고 생각하면 되겠다.
+    --> 어차피 랜덤하게 뿌려주는 PPP니까 괜찮다고 하셨다. 나는 highway scenario라서 PPP가 아닐 것 같은데..
+   - 차량 위치를 정하고 lane에 따라서 속도를 지정해야 할 것 같다. 
+     왼쪽부터 1차선-4차선까지 90km/h, 72km/h, 48km/h, 36km/h
+ 4) typeOfScenario를 PPP로 하냐 Highway scenario로 하냐 결정하기
+   - 처음에 차를 뿌려놓는 걸 포아송으로 뿌려 놓는다는 표현이 있어서 
+     Highway scenario가 아니라 PPP로 해야 하는 건가 싶었는데 그렇게 중요한 건 아닌 것 같다. 
+     두 시나리오 모두 x,y가 랜덤으로 흩뿌려지기 때문에 큰 문제가 되지 않아 보인다.
+     굳이 하나를 정한다면 Bazzi 논문과 비슷하게 Highway scenario로 하는 게 좋을 것 같다.
 
- 2) PRR 비교하기
-  - printPRRmap은 urban scenario에서만 가능한 것 같다. 그럼 직접 packet reception rate를 구해야 하는 건가?
+4. 주행속도를 적절히 셋팅해서 이게 바꾼 sps랑 원래 sps에서 performance가 좋아지는 지 확인해야 할 것 같다.
+ 1) PRR 비교하기
+  - printPRRmap은 urban scenario에서만 가능한 것 같다. 그럼 직접 packet reception rate를 구해야 할 것 같다.
  
   - density에 따른 packet reception rate --> TxRx distance에 따른 PRR을 보라고 하심
     
- 3) PIR 비교하기
+ 2) PIR 비교하기
   - packet inter-reception time을 의미, printUpdateDelay로 이용하는 것 같다. 기본이 false로 되어 있으므로 true로 만들어 주면 뭔가 나올 듯
     연속적으로 비콘 수신을 성공했을 때의 시간을 말하는 듯
 
   - TxRx distance에 따른 PIR
 
- 4) no show 문제를 극대화해서 보려면 200vehicles/km부터 그 이상을 봐야 할 듯
- 5) 저번에 CBR얘기가 나왔는데 이것도 같이 보면 좋을 듯
+ 3) no show 문제를 극대화해서 보려면 200vehicles/km부터 그 이상을 봐야 할 듯
+ 4) 저번에 CBR얘기가 나왔는데 이것도 같이 보면 좋을 듯
 
-4. 한 lane 내에서도 속도를 일정하게 하지 말고, 그 일정한 속도를 평균으로 하는 전후 값들을 지정해 주어 변동을 주었을 때도 성능 향상 있는 지 확인
+5. 한 lane 내에서도 속도를 일정하게 하지 말고, 그 일정한 속도를 평균으로 하는 전후 값들을 지정해 주어 변동을 주었을 때도 성능 향상 있는 지 확인
 
 
-5. 논문 읽는 법
+6. 논문 읽는 법
  1) motivation
  2) problem definition
  3) solution approach
