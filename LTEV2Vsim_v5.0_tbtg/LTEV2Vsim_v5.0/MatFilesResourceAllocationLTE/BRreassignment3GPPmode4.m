@@ -143,7 +143,6 @@ if ~isempty(stationManagement.transmittingIDsLTE)
            end
         end
 %         %hyeonji - BRid 같다고 RC값 떨어뜨리면 뛰어 넘었을 때도 떨어지게 되니까 추가된 만큼 더해주기      
-%                    이
 %         if RRP > 1
 %            stationManagement.resReselectionCounterLTE(idVtx) = stationManagement.resReselectionCounterLTE(idVtx) + (RRP - 1);
 %         end
@@ -275,7 +274,7 @@ for indexSensingV = 1:Nscheduled
         % If the number of acceptable BRs is lower than MBest,
         % powerThreshold is increased by 3 dB
 %         usableBRs = ((sensingMatrixPerm*0.015)<powerThreshold) | ((sensingMatrixPerm<inf) & (knownUsedMatrixPerm<1));
-        %hyeonji
+        %hyeonji - 내가 나를 sensing하면 inf가 되더라
         usableBRs = ((sensingMatrixPerm*0.015)<powerThreshold) | ((sensingMatrixPerm<inf) & (knownRRPMatrixScheduledPerm<1));
         if sum(usableBRs) < MBest
             powerThreshold = powerThreshold * 2;
