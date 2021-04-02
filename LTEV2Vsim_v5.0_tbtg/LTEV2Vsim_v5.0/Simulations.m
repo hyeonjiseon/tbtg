@@ -11,7 +11,7 @@ clc          % Clear the command window
 %for i = 1:length(density)
     LTEV2Vsim('BenchmarkPoisson.cfg','simulationTime',90, 'rho', 200,...
         'BRAlgorithm',18, 'camDiscretizationType', 'allSteps', ...
-        'NLanes', 4, 'roadWidth', 3.5, 'TypeOfScenario', 'ETSI-Highway');
+        'NLanes', 4, 'roadLength', 3000, 'roadWidth', 4, 'TypeOfScenario', 'ETSI-Highway');
 %end
 %'cV', 90,
 %'MCS_LTE', 7, 'printCBR', true

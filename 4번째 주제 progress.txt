@@ -90,12 +90,41 @@
      굳이 하나를 정한다면 Bazzi 논문과 비슷하게 Highway scenario로 하는 게 좋을 것 같다.
 
 4. 주행속도를 적절히 셋팅해서 이게 바꾼 sps랑 원래 sps에서 performance가 좋아지는 지 확인해야 할 것 같다.
- 1) PRR 비교하기
+ 1) PRR 비교하기(4/2)
+   --> density에 따른 packet reception rate --> TxRx distance에 따른 PRR을 보라고 하심
   - printPRRmap은 urban scenario에서만 가능한 것 같다. 그럼 직접 packet reception rate를 구해야 할 것 같다.
- 
-  - density에 따른 packet reception rate --> TxRx distance에 따른 PRR을 보라고 하심
+  - printPRRmap에서 뭐 따올 것 없는 지 봤는데 이건 바로 이미지파일로 뽑는 것 같다.
+    하지만 굳이 그림을 만드려고 하지 않아도 각각의 x,y값만 알면 plot으로 띄울 수 있다.
+    직접 하는 게 좋을 것 같다.
+  - 지현코드설명에선 mainLTEV2V.m 아랫부분에 PRRForDistance = numOfRx ./ numOfTx;로 짜고 로그를 다음과 같이 남겼다.
+    outFile = fopen(sprintf('./ITTpercent_%d/PRR_Raw%d_VErange%d_rho%d_MCS%d_%f_ITTpercent_%d_data', simParams.ITTpercent, phyParams.Raw, phyParams.rangeforVehicleDensity, simParams.rho, phyParams.MCS, phyParams.smoothingFactorFor...
+    for i = 1:length(PRRForDistance)
+	fprintf(outFile, '%f\t', PRRForDistance(i));
+    end
+    fprintf(outFile, '\n');
+    fclose(outFile);
+  - PRR은 '수신한 패킷 수를 송신한 패킷 수로 나눈 비율'인데, 
+    송신을 하면 neighborsID에 쏘고, SINR이 threshold보다 낮은 것은 수신 실패한 것이다.
+    SINR이 낮은 것 중에서도 Raw보다 멀리 있는 것들 역시 수신 실패이다.
+    그런데 이것들을 제외해도 Raw보다 멀리 있는데 SINR이 threshold보다 높은 게 있다.
+    물론 시뮬레이터에서는 SINR이 threshold보다 높아도 Raw보다 멀리 있으면 correctly transmitted beacon이 아니라고 친다.
+    그럼 분모와 분자를 Raw 안에 있는 것들로 구성해야 하는 건가? 그렇다면 송신자로부터 150m까지밖에 못 구하게 되는데,
+    영준 논문에선 400m까지 tx-rx distance를 했다면 Raw를 400까지 늘려주어야 하나? 
+   --> 맞는 것 같다. Raw는 PRR에서 target distance를 정할 수 있게 된다.
+  - 기준 단말을 놓고 neighborsID를 distance별로 sort해서 그 순서대로 PRR을 정렬해야 하지 않을까?
+    distance는 positionManagement.distanceReal에서 sort하면 될 것 같다.
+    transmittingID 189번의 neighborsID 갯수는 53인데, 이 중 8개가 수신 실패가 일어났다. 따라서 수신 성공한 ID 갯수는 45개다.
+    transmittingID 196번의 neighborsID 갯수는 60인데, 이 중 16개가 수신 실패가 일어났다. 따라서 수신 성공한 ID 갯수는 44개다.
+    189와 196이 동시에 전송되었으므로 이 때 총 송신 비콘 갯수는 NtxBeacons = 113, 총 수신 비콘 갯수는  89이다.
+   --> PRR을 바로 구할 수 있는 함수가 있다고 한다. 여기에 edge effect를 뺀다고 추가해서 구하면 된다고 함
+        가장 아래에 countDistanceDetails.m이 있는데 이거인 것 같다.
+   --> edge effect를 roadLength가 3000이면 앞뒤로 1000, 2000이면 앞뒤로 500-600m 정도 하기
+
+  - transmittingID가 edge effect가 일어날 수 있는 곳에 있으면 PRR이 무슨 의미가 있담?
+
+  - 기존 SPS에서 차 배치 및 속도 셋팅 후 PRR뽑기
     
- 2) PIR 비교하기
+ 2) PIR 비교하기(4/3)
   - packet inter-reception time을 의미, printUpdateDelay로 이용하는 것 같다. 기본이 false로 되어 있으므로 true로 만들어 주면 뭔가 나올 듯
     연속적으로 비콘 수신을 성공했을 때의 시간을 말하는 듯
 

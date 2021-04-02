@@ -230,6 +230,10 @@ while timeManagement.timeNow < simParams.simulationTime
     
 end
 
+%hyeonji - 여기서 PRR을 뽑으면 좋을 듯
+PRRForDistance = numOfRx ./ numOfTx;
+
+
 % Print end of simulation
 msg = sprintf('%.1f / %.1fs',simParams.simulationTime,simParams.simulationTime);
 fprintf([reverseStr, msg]);

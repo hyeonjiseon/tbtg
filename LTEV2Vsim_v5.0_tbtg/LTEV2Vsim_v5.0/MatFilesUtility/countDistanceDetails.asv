@@ -22,9 +22,6 @@ function distanceDetailsCounter = countDistanceDetails(indexVehicleTX,neighborsI
 % Project: LTEV2Vsim
 % ==============
 
-%hyeonji - 만약 transmittingID가 edge effect가 일어날 수 있는 곳에 있으면 PRR이 의미가 없음
-
-
 % Update array with the events vs. distance
 for i = 1:1:length(distanceDetailsCounter(:,1))
     %LTEV2Vsim.m 185-191 line에서 outputValues.distanceDetailsCounterLTE =
