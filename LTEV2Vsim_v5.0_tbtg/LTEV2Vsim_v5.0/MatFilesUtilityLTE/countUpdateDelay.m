@@ -25,8 +25,8 @@ function [updateTimeMatrix,updateDelayCounter] = countUpdateDelay(iPhyRaw,IDvehi
 % Row index -> transmitting vehicle's ID
 % Column index -> receiving vehicle's ID
 Ntx = length(IDvehicleTX);
-all = 1:length(BRid);
-delayMax = length(updateDelayCounter(:,1))*delayResolution;
+all = 1:length(BRid); %1*600 double
+delayMax = length(updateDelayCounter(:,1))*delayResolution; %10001*0.001 - hj
 
 % Find not assigned BRid
 indexNOT = BRid<=0;
@@ -37,10 +37,10 @@ BRidT(indexNOT) = -1;
 
 for i = 1:Ntx
     % Vehicles inside the awareness range of vehicle IDvehicleTX(i)
-    IDIn = awarenessID(indexVehicleTX(i),awarenessID(indexVehicleTX(i),:)>0);
+    IDIn = awarenessID(indexVehicleTX(i),awarenessID(indexVehicleTX(i),:)>0); %1*62 double - hj
     % ID of vehicles that are outside the awareness range of vehicle i
-    IDOut = setdiff(all,IDIn);
-    updateTimeMatrix(IDvehicleTX(i),IDOut,iPhyRaw)=-1;
+    IDOut = setdiff(all,IDIn); %1*538 double - hj
+    updateTimeMatrix(IDvehicleTX(i),IDOut,iPhyRaw)=-1; %TX기준 awareness range 밖에 있는 건 -1로 해놓고 들어감
     for j = 1:length(IDIn)
         % If boolean 'enableUpdateDelayHD' is false, if the vehicle is not
         % blocked and if there is no error in reception, update the matrix

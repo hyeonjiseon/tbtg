@@ -27,15 +27,17 @@ if outParams.printUpdateDelay
         % outputValues.updateDelayCounterLTE needs elaboration
         % Now contains values up to each awareness range value; must
         % instead include teh values in each group
+        % outputValues.updateDelayCounterLTE는 정교함이 필요하다 - hj
+        % 이제 각 인식 범위 값까지의 값을 포함한다. 대신 각 그룹의 값을 포함해야 한다. - hj
         for iPhyRaw=length(outputValues.updateDelayCounterLTE(1,:)):-1:2
             outputValues.updateDelayCounterLTE(:,iPhyRaw) = outputValues.updateDelayCounterLTE(:,iPhyRaw)-outputValues.updateDelayCounterLTE(:,iPhyRaw-1);
         end
         % Now the values can be print
         filename = sprintf('%s/update_delay_%.0f_%s.xls',outParams.outputFolder,outParams.simID,'LTE');
         fileID = fopen(filename,'at');
-        NeventsTOT = sum(outputValues.updateDelayCounterLTE,1);
+        NeventsTOT = sum(outputValues.updateDelayCounterLTE,1); %1차원에 있는 거 다 더함 - hj
         for i = 1:length(outputValues.updateDelayCounterLTE(:,1))
-            fprintf(fileID,'%.3f\t',i*outParams.delayResolution);
+            fprintf(fileID,'%.3f\t',i*outParams.delayResolution); %다시 초 단위로 바꿈
             for iPhyRaw=1:length(NeventsTOT)   
                 fprintf(fileID,'%d\t%.6f',outputValues.updateDelayCounterLTE(i,iPhyRaw),sum(outputValues.updateDelayCounterLTE(1:i,iPhyRaw))/NeventsTOT(iPhyRaw));
                 if length(NeventsTOT)>1

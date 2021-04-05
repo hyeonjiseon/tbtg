@@ -125,14 +125,14 @@ end
 if outParams.printUpdateDelay
     % Initialize matrix containing update time of the received beacons
     simValues.updateTimeMatrix11p = -1*ones(simValues.maxID,simValues.maxID,length(phyParams.Raw));
-    simValues.updateTimeMatrixLTE = -1*ones(simValues.maxID,simValues.maxID,length(phyParams.Raw));
+    simValues.updateTimeMatrixLTE = -1*ones(simValues.maxID,simValues.maxID,length(phyParams.Raw)); %600*600 double - hj
     
     % Initialize array with the counters of update delay events
     % (max 10 s + delayResolution -> delays larger than 10 s are
     % registered in the last element of the array)
-    NupdateDelayEvents = round(10/outParams.delayResolution)+1;
+    NupdateDelayEvents = round(10/outParams.delayResolution)+1; %10001 - hj
     outputValues.updateDelayCounter11p = zeros(NupdateDelayEvents,length(phyParams.Raw));
-    outputValues.updateDelayCounterLTE = zeros(NupdateDelayEvents,length(phyParams.Raw));
+    outputValues.updateDelayCounterLTE = zeros(NupdateDelayEvents,length(phyParams.Raw)); %10001*1 double - hj
     
     if outParams.printWirelessBlindSpotProb
         % Initialize matrix containing the counters needed for computation
