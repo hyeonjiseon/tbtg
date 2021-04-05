@@ -90,7 +90,7 @@
      굳이 하나를 정한다면 Bazzi 논문과 비슷하게 Highway scenario로 하는 게 좋을 것 같다.
 
 4. 주행속도를 적절히 셋팅해서 이게 바꾼 sps랑 원래 sps에서 performance가 좋아지는 지 확인해야 할 것 같다.
- 1) PRR 비교하기(4/2)
+ 1) PRR 비교하기(4/2-4/3)
    --> density에 따른 packet reception rate --> TxRx distance에 따른 PRR을 보라고 하심
   - printPRRmap은 urban scenario에서만 가능한 것 같다. 그럼 직접 packet reception rate를 구해야 할 것 같다.
   - printPRRmap에서 뭐 따올 것 없는 지 봤는데 이건 바로 이미지파일로 뽑는 것 같다.
@@ -119,15 +119,15 @@
    --> PRR을 바로 구할 수 있는 함수가 있다고 한다. 여기에 edge effect를 뺀다고 추가해서 구하면 된다고 함
         가장 아래에 countDistanceDetails.m이 있는데 이거인 것 같다.
    --> edge effect를 roadLength가 3000이면 앞뒤로 1000, 2000이면 앞뒤로 500-600m 정도 하기
-
   - transmittingID가 edge effect가 일어날 수 있는 곳에 있으면 PRR이 무슨 의미가 있담?
-
+   --> 그냥 양 사이드만 제외하는 것이니까 그렇게까지 생각할 필요 없다고 함
+  - LTEV2Vsim.m 284-291 line에서 엑셀파일로 나오게 됨
   - 기존 SPS에서 차 배치 및 속도 셋팅 후 PRR뽑기
     
  2) PIR 비교하기(4/3)
   - packet inter-reception time을 의미, printUpdateDelay로 이용하는 것 같다. 기본이 false로 되어 있으므로 true로 만들어 주면 뭔가 나올 듯
     연속적으로 비콘 수신을 성공했을 때의 시간을 말하는 듯
-
+   --> updateDelay 함수 그대로 쓰면 된다고 함
   - TxRx distance에 따른 PIR
 
  3) no show 문제를 극대화해서 보려면 200vehicles/km부터 그 이상을 봐야 할 듯

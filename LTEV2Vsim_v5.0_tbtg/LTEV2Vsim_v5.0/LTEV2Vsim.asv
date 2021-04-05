@@ -292,17 +292,10 @@ end
 
 %hyeonji - PRR 그래프 뽑아보자
 printPRRmetrix = outputValues.distanceDetailsCounterLTE;
-printPRRmetrix(:,5) = printPRRmetrix(:,2) + printPRRmetrix(:,3) + printPRRmetrix(:,4);
-for j=length(printPRRmetrix(:,1)):-1:2
-    printPRRmetrix(j,2:end) = printPRRmetrix(j,2:end) - printPRRmetrix(j-1,2:end);
-end
 
-for i = 1:length(printPRRmetrix(:,1))
-    printPRRmetrix(i,6) = printPRRmetrix(i,2)/printPRRmetrix(i,5);
-end
 
 x = printPRRmetrix(:,1);
-y = printPRRmetrix(:,6);
+y = outputValues.distanceDetailsCounterLTE(:,2)/(outputValues.distanceDetailsCounterLTE(:,2)+outputValues.distanceDetailsCounterLTE(:,3));
 plot(x,y,'r*')
 
 % Print PRRmap to file (if enabled)
