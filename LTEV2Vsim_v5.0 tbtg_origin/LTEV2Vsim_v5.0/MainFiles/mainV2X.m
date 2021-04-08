@@ -164,7 +164,7 @@ while timeManagement.timeNow < simParams.simulationTime
         end
 
         %timeManagement.timeNextPacket(idEvent) = timeManagement.timeNow + timeManagement.beaconPeriod(idEvent);
-        
+        %hyeonji
         timeManagement.timeNextPacket(idEvent) = timeManagement.timeNow + timeManagement.generationInterval(idEvent);
         timeManagement.timeLastPacket(idEvent) = timeManagement.timeNow;
          

@@ -205,7 +205,10 @@ end
 % Generate time values of new vehicles entering the scenario
 timeManagement.timeNextPacket(stationManagement.activeIDs(indexNewVehicles)) = timeManagement.timeNow + appParams.averageTbeacon * rand(1,length(indexNewVehicles));
 timeManagement.beaconPeriod(stationManagement.activeIDs(indexNewVehicles)) = appParams.averageTbeacon - appParams.variabilityTbeacon/2 + appParams.variabilityTbeacon*rand(length(indexNewVehicles),1);
-timeManagement.beaconPeriod(stationManagement.activeIDsLTE) = appParams.averageTbeacon;
+% timeManagement.beaconPeriod(stationManagement.activeIDsLTE) = appParams.averageTbeacon;
+%hyeonji - generationInterval
+timeManagement.generationInterval(stationManagement.activeIDs) = generationPeriodFromSpeed(simValues.v,appParams);
+
 % Reset time next packet and tx-rx for vehicles that exit the scenario
 timeManagement.timeNextPacket(stationManagement.activeIDsExit) = Inf;
 

@@ -124,6 +124,10 @@ inTheLastSubframe(activeIdsLTE) = (subframeNextPacket(activeIdsLTE)==currentT);
 % the last subframe
 % Among them, those that have reached 0 need to be reset between min and max
 % stationManagement.resReselectionCounterLTE(activeIdsLTE) = stationManagement.resReselectionCounterLTE(activeIdsLTE)-inTheLastSubframe(activeIdsLTE);
+%RC값은 패킷 생성 시, 전송 시 하나씩 떨어진다. 예약을 평소처럼 100ms마다 하는데
+%여기서는 aperiodic한 전송이 일어나고 no-show 문제로 성능이 떨어지는
+%걸 보는 실험이니까... RC값이 
+
 
 %hyeonji - 매 패킷 생성 시 RC값 떨어지니까 패킷이 안 생기게 해야 할 것 같다
 %hyeonji - 100ms 단위일 땐 모든 차량이 100ms 안에 한 번씩 전송하니까 이 전송들이 다 끝나고 나면 한번에 RC값을 내려줬다.

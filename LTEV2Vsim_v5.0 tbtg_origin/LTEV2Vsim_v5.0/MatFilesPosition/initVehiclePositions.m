@@ -77,12 +77,26 @@ if simParams.typeOfScenario~=2 % Not traffic trace
     % the Gaussian is truncated to avoid negative values or still vehicles
     % (not optimized, but used only once during initialization)
     simValues.v = abs(vMeanMs + vStDevMs.*randn(Nvehicles,1));
-    for i=1:Nvehicles
-        while simValues.v(i)<0 || (vMeanMs>0 && simValues.v(i)==0)
-            % if the speed is negative or zero, a new value is randomly selected
-            simValues.v(i) = abs(vMeanMs + vStDevMs.*randn(1,1));
+%     for i=1:Nvehicles
+%         while simValues.v(i)<0 || (vMeanMs>0 && simValues.v(i)==0)
+%             % if the speed is negative or zero, a new value is randomly selected
+%             simValues.v(i) = abs(vMeanMs + vStDevMs.*randn(1,1));
+%         end
+%     end
+
+    %hyeonji - 속도를 lane별로 정해주기 1차선부터 4차선까지 90km/h, 72km/h, 48km/h, 36km/h
+    for i = 1:simValues.maxID
+        if positionManagement.YvehicleReal(i)/simParams.roadWidth == 4 || positionManagement.YvehicleReal(i)/simParams.roadWidth == 5
+            simValues.v(i,1) = 90/3.6;
+        elseif positionManagement.YvehicleReal(i)/simParams.roadWidth == 3 || positionManagement.YvehicleReal(i)/simParams.roadWidth == 6
+            simValues.v(i,1) = 72/3.6;
+        elseif positionManagement.YvehicleReal(i)/simParams.roadWidth == 2 || positionManagement.YvehicleReal(i)/simParams.roadWidth == 7
+            simValues.v(i,1) = 48/3.6;
+        else
+            simValues.v(i,1) = 36/3.6;
         end
     end
+
     
     % Time resolution of position update corresponds to the beacon period
     simParams.positionTimeResolution = appParams.averageTbeacon;
