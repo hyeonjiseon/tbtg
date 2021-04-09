@@ -86,14 +86,31 @@ outputValues.Nvehicles11p = outputValues.Nvehicles11p + length(stationManagement
 
 %% Initialization of packets management 
 % Number of packets in the queue of each node
-stationManagement.nPackets = zeros(simValues.maxID,1);
+stationManagement.nPackets = zeros(simValues.maxID,1); %11p에서 필요한 듯 - hj
 
 % Packet generation
+
+%hyeonji - generationInterval
+if simParams.typeOfScenario~=2 % Not traffic trace
+    timeManagement.generationInterval = generationPeriodFromSpeed(simValues.v,appParams);
+else
+    timeManagement.generationInterval = appParams.averageTbeacon * ones(simValues.maxID,1);
+end
+
+%hyeonji - 이 추가 지연은 애플리케이션에서 액세스 계층으로의 지연을 추가하거나 생성에 인위적인 지연을 추가하는 데 사용할 수 있다.
+timeManagement.addedToGenerationTime = zeros(simValues.maxID,1);
+
 timeManagement.timeNextPacket = Inf * ones(simValues.maxID,1);
-timeManagement.timeNextPacket(simValues.IDvehicle) = appParams.averageTbeacon * rand(length(simValues.IDvehicle),1);
+%timeManagement.timeNextPacket(simValues.IDvehicle) = appParams.averageTbeacon * rand(length(simValues.IDvehicle),1);
+
+%hyeonji - 0부터 generationInterval 사이 uniformly random하게
+timeManagement.timeNextPacket(simValues.IDvehicle) = timeManagement.generationInterval(stationManagement.activeIDs) .* rand(length(stationManagement.activeIDs),1);
+
 timeManagement.timeLastPacket = -1 * ones(simValues.maxID,1); % needed for the calculation of the CBR
-timeManagement.beaconPeriod = appParams.averageTbeacon - appParams.variabilityTbeacon/2 + appParams.variabilityTbeacon*rand(simValues.maxID,1);
-timeManagement.beaconPeriod(stationManagement.activeIDsLTE) = appParams.averageTbeacon;
+
+% timeManagement.beaconPeriod = appParams.averageTbeacon - appParams.variabilityTbeacon/2 + appParams.variabilityTbeacon*rand(simValues.maxID,1);
+% timeManagement.beaconPeriod(stationManagement.activeIDsLTE) = appParams.averageTbeacon;
+%위 두 line은 5.4v에서 aperiodic을 안 하는 LTE에서 쓰라고 만들었던 것임 - hj
 
 %% Initialize propagation
 % Tx power vectors
@@ -180,15 +197,11 @@ sinrManagement.P_RX_MHz =  ( (phyParams.P_ERP_MHz_LTE(stationManagement.activeID
 %% Initialization of time variables
 % Stores the instant of the next event among all possible events;
 % initially set to the first packet generation
+%가능한 모든 이벤트 중에서 다음 이벤트의 순간을 저장한다. - hj
+%초기에 첫 번째 패킷 생성으로 설정 됨 - hj
 timeManagement.timeNextEvent = Inf * ones(simValues.maxID,1);
 timeManagement.timeNextEvent(simValues.IDvehicle) = timeManagement.timeNextPacket(simValues.IDvehicle);
 
-%hyeonji - generationInterval
-if simParams.typeOfScenario~=2 % Not traffic trace
-    timeManagement.generationInterval = generationPeriodFromSpeed(simValues.v,appParams);
-else
-    timeManagement.generationInterval = appParams.averageTbeacon * ones(simValues.maxID,1);
-end
 
 %% Initialization of variables related to transmission in IEEE 802.11p
 % 'timeNextTxRx11p' stores the instant of the next backoff or
@@ -303,15 +316,11 @@ if simParams.technology ~= 2 % not only 11p
 
     if simParams.BRAlgorithm==18    
         
-        %hyeonji - 왠지 여기에 추가하고 싶음 RRP가 실수로 나올 거라서 미리 칸을 정해줄 수 없음
-        stationManagement.ReserveRRPMatrix = zeros(appParams.NbeaconsT*appParams.NbeaconsF,10,simValues.maxID);
-        stationManagement.knownRRPMatrix = zeros(appParams.NbeaconsT*appParams.NbeaconsF,10,simValues.maxID-1);
-        
         %hyeonji - RC값 건너뛰기 위함
         stationManagement.RRItx = int8(timeManagement.generationInterval*10);
         stationManagement.CountRRI = stationManagement.RRItx;
-        %hyeonji - transmittingID 건너뛰기 위함
-        stationManagement.RRIcount = stationManagement.RRItx;
+%         %hyeonji - transmittingID 건너뛰기 위함
+%         stationManagement.RRIcount = stationManagement.RRItx;
         
         % Find min and max values for random counter (BRAlgorithm=18)
         [simParams.minRandValueMode4,simParams.maxRandValueMode4] = findRandValueMode4(appParams.averageTbeacon,simParams);
@@ -323,11 +332,16 @@ if simParams.technology ~= 2 % not only 11p
         % stationManagement.resReselectionCounterLTE(stationManagement.BRid==-1)=0;
 
         % Initialization of sensing matrix (BRAlgorithm=18)
-        stationManagement.sensingMatrixLTE = zeros(ceil(simParams.TsensingPeriod/appParams.averageTbeacon),appParams.Nbeacons,simValues.maxID);
-        stationManagement.knownUsedMatrixLTE = zeros(appParams.Nbeacons,simValues.maxID);
+        stationManagement.sensingMatrixLTE = zeros(ceil(simParams.TsensingPeriod/appParams.averageTbeacon),appParams.Nbeacons,simValues.maxID);%sim5.4v에서도 같음 - hj
+%         stationManagement.knownUsedMatrixLTE = zeros(appParams.Nbeacons,simValues.maxID);
 
+        %hyeonji
+        stationManagement.ReserveRRPMatrix = zeros(appParams.NbeaconsT*appParams.NbeaconsF,10,simValues.maxID);
+        stationManagement.knownRRPMatrix = zeros(appParams.NbeaconsT*appParams.NbeaconsF,10,simValues.maxID-1);
+        
         % First random allocation 
         [stationManagement.BRid,~] = BRreassignmentRandom(simValues.IDvehicle,stationManagement.BRid,appParams.Nbeacons,simParams,appParams);
+        %BRid 차량 수만큼 Nbeacons(100)에서 랜덤으로 생성되고 차량 수만큼 Nreassign
         
         % vector correctSCImatrixLTE created
         stationManagement.correctSCImatrixLTE = [];

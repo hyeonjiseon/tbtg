@@ -28,8 +28,8 @@ timeManagement.elapsedTime_subframes = floor((timeManagement.timeNow+1e-9)/phyPa
 BRidT = ceil((stationManagement.BRid)/appParams.NbeaconsF);
 BRidT(stationManagement.BRid<=0)=-1;
 
-% % Find IDs of vehicles that are currently transmitting
-% stationManagement.transmittingIDsLTE = find(BRidT == (mod((timeManagement.elapsedTime_subframes-1),appParams.NbeaconsT)+1));
+% Find IDs of vehicles that are currently transmitting
+%stationManagement.transmittingIDsLTE = find(BRidT == (mod((timeManagement.elapsedTime_subframes-1),appParams.NbeaconsT)+1));
 
 %hyeonji - 일단 처음에 100ms까지 한 번씩은 원래대로 전송
 if timeManagement.elapsedTime_subframes <= 100
@@ -46,7 +46,6 @@ else %hyeonji - 100ms 이후부터는 RRI가 길면 뛰어넘기
         end
     end
 end
-
 
 if ~isempty(stationManagement.transmittingIDsLTE)     
     % Find index of vehicles that are currently transmitting

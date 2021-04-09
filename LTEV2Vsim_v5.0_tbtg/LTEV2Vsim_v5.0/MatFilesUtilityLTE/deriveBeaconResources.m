@@ -21,19 +21,19 @@ function [appParams,phyParams,varargin] = deriveBeaconResources(appParams,phyPar
 % ==============
 
 % Call function to find the total number of RBs in the frequency domain per Tslot
-phyParams.RBsFrequency = RBtable(phyParams.BwMHz);
+phyParams.RBsFrequency = RBtable(phyParams.BwMHz); %50 - hj
 
 % Number of RBs allocated to the Cooperative Awareness (V2V)
-appParams.RBsFrequencyV2V = floor(phyParams.RBsFrequency*(appParams.resourcesV2V/100));
+appParams.RBsFrequencyV2V = floor(phyParams.RBsFrequency*(appParams.resourcesV2V/100)); %50 - hj
 
 % % Find the total number of RBs per subframe
-phyParams.RBsSubframe = phyParams.RBsFrequency*(phyParams.Tsf/phyParams.Tslot);
+phyParams.RBsSubframe = phyParams.RBsFrequency*(phyParams.Tsf/phyParams.Tslot); %100 - hj
 
 % % Number of RBs allocated to the Cooperative Awareness
-appParams.RBsSubframeBeaconing = appParams.RBsFrequencyV2V*(phyParams.Tsf/phyParams.Tslot);
+appParams.RBsSubframeBeaconing = appParams.RBsFrequencyV2V*(phyParams.Tsf/phyParams.Tslot); %100 - hj
 
 % Call function to find the number of RBs needed to carry a beacon and minimum SINR
-appParams.beaconSizeBits = appParams.beaconSizeBytes*8;
+appParams.beaconSizeBits = appParams.beaconSizeBytes*8; %190*8=1520 - hj
 [appParams.RBsBeacon, phyParams.sinrThresholdLTE_dB, phyParams.NbitsHz] = findRBsBeaconSINRmin(phyParams.MCS_LTE,appParams.beaconSizeBits);
 
 %% SINR

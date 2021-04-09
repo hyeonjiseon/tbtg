@@ -28,38 +28,44 @@ timeManagement.elapsedTime_subframes = floor((timeManagement.timeNow+1e-9)/phyPa
 BRidT = ceil((stationManagement.BRid)/appParams.NbeaconsF);
 BRidT(stationManagement.BRid<=0)=-1;
 
+if mod((timeManagement.elapsedTime_subframes-1),appParams.NbeaconsT)+1 == 5
+    hi = 1;
+end
+
 % Find IDs of vehicles that are currently transmitting
 %stationManagement.transmittingIDsLTE = find(BRidT == (mod((timeManagement.elapsedTime_subframes-1),appParams.NbeaconsT)+1));
+%mainInit에서 generationPeriod에 따라서 timeNextPacket 설정해서 이대로 가도 됨 - hj
+
 
 %hyeonji - transmittingID도 뛰어 넘어 보자.
 %hyeonji - 매 subframe마다 transmittingID를 정할 수 있게 되어 있음
-% for i = 1:simValues.maxID
-%     if stationManagement.RRIcount(i) > 1
-%         stationManagement.RRIcount(i) = stationManagement.RRIcount(i) - 1;
-%     elseif stationManagement.RRIcount(i) == 1
-%         %stationManagement.transmittingIDsLTE2 = find(BRidT(i) == (mod((timeManagement.elapsedTime_subframes-1),appParams.NbeaconsT)+1));
-%         if find(BRidT(i) == (mod((timeManagement.elapsedTime_subframes-1),appParams.NbeaconsT)+1))
-%             stationManagement.transmittingIDsLTE2 = i;
-%         end         
-%         stationManagement.RRIcount(i) = stationManagement.RRItx(i);
-%     end
-% end
-
-%hyeonji - 일단 처음에 100ms까지 한 번씩은 원래대로 전송
-if timeManagement.elapsedTime_subframes <= 100
-    stationManagement.transmittingIDsLTE = find(BRidT == (mod((timeManagement.elapsedTime_subframes-1),appParams.NbeaconsT)+1));
-else %hyeonji - 100ms 이후부터는 RRI가 길면 뛰어넘기
-    for i = 1:simValues.maxID
+for i = 1:simValues.maxID
+    if stationManagement.RRIcount(i) > 1
+        stationManagement.RRIcount(i) = stationManagement.RRIcount(i) - 1;
+    elseif stationManagement.RRIcount(i) == 1
+        %stationManagement.transmittingIDsLTE2 = find(BRidT(i) == (mod((timeManagement.elapsedTime_subframes-1),appParams.NbeaconsT)+1));
         if find(BRidT(i) == (mod((timeManagement.elapsedTime_subframes-1),appParams.NbeaconsT)+1))
-            if stationManagement.RRIcount(i) > 1
-                stationManagement.RRIcount(i) = stationManagement.RRIcount(i) - 1;
-            elseif stationManagement.RRIcount(i) == 1
-                stationManagement.transmittingIDsLTE = i;
-                stationManagement.RRIcount(i) = stationManagement.RRItx(i);
-            end
-        end
+            stationManagement.transmittingIDsLTE2 = i;
+        end         
+        stationManagement.RRIcount(i) = stationManagement.RRItx(i);
     end
 end
+
+%hyeonji - 일단 처음에 100ms까지 한 번씩은 원래대로 전송
+% if timeManagement.elapsedTime_subframes <= 100
+%     stationManagement.transmittingIDsLTE = find(BRidT == (mod((timeManagement.elapsedTime_subframes-1),appParams.NbeaconsT)+1));
+% else %hyeonji - 100ms 이후부터는 RRI가 길면 뛰어넘기
+%     for i = 1:simValues.maxID
+%         if find(BRidT(i) == (mod((timeManagement.elapsedTime_subframes-1),appParams.NbeaconsT)+1))
+%             if stationManagement.RRIcount(i) > 1
+%                 stationManagement.RRIcount(i) = stationManagement.RRIcount(i) - 1;
+%             elseif stationManagement.RRIcount(i) == 1
+%                 stationManagement.transmittingIDsLTE = i;
+%                 stationManagement.RRIcount(i) = stationManagement.RRItx(i);
+%             end
+%         end
+%     end
+% end
     
     
 

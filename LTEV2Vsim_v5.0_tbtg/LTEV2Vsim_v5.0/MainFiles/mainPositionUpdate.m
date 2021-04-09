@@ -204,9 +204,11 @@ end
 
 % Generate time values of new vehicles entering the scenario
 timeManagement.timeNextPacket(stationManagement.activeIDs(indexNewVehicles)) = timeManagement.timeNow + appParams.averageTbeacon * rand(1,length(indexNewVehicles));
-timeManagement.beaconPeriod(stationManagement.activeIDs(indexNewVehicles)) = appParams.averageTbeacon - appParams.variabilityTbeacon/2 + appParams.variabilityTbeacon*rand(length(indexNewVehicles),1);
 
-%timeManagement.beaconPeriod(stationManagement.activeIDsLTE) = appParams.averageTbeacon; %이걸 어떻게 해야 할 듯 -hj
+%timeManagement.beaconPeriod(stationManagement.activeIDs(indexNewVehicles)) = appParams.averageTbeacon - appParams.variabilityTbeacon/2 + appParams.variabilityTbeacon*rand(length(indexNewVehicles),1);
+%timeManagement.beaconPeriod(stationManagement.activeIDsLTE) = appParams.averageTbeacon; 
+%위 두 line은 periodic일 때 쓰이는 것이라서 주석처리함 - hj
+
 %hyeonji - generationInterval
 timeManagement.generationInterval(stationManagement.activeIDs) = generationPeriodFromSpeed(simValues.v,appParams);
 

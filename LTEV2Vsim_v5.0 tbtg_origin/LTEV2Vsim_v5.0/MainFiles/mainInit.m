@@ -89,8 +89,23 @@ outputValues.Nvehicles11p = outputValues.Nvehicles11p + length(stationManagement
 stationManagement.nPackets = zeros(simValues.maxID,1);
 
 % Packet generation
+
+%hyeonji - generationInterval
+if simParams.typeOfScenario~=2 % Not traffic trace
+    timeManagement.generationInterval = generationPeriodFromSpeed(simValues.v,appParams);
+else
+    timeManagement.generationInterval = appParams.averageTbeacon * ones(simValues.maxID,1);
+end
+
+%hyeonji - 이 추가 지연은 애플리케이션에서 액세스 계층으로의 지연을 추가하거나 생성에 인위적인 지연을 추가하는 데 사용할 수 있다.
+timeManagement.addedToGenerationTime = zeros(simValues.maxID,1);
+
 timeManagement.timeNextPacket = Inf * ones(simValues.maxID,1);
-timeManagement.timeNextPacket(simValues.IDvehicle) = appParams.averageTbeacon * rand(length(simValues.IDvehicle),1);
+%timeManagement.timeNextPacket(simValues.IDvehicle) = appParams.averageTbeacon * rand(length(simValues.IDvehicle),1);
+
+%hyeonji - 0부터 generationInterval 사이 uniformly random하게
+timeManagement.timeNextPacket(simValues.IDvehicle) = timeManagement.generationInterval(stationManagement.activeIDs) .* rand(length(stationManagement.activeIDs),1);
+
 timeManagement.timeLastPacket = -1 * ones(simValues.maxID,1); % needed for the calculation of the CBR
 timeManagement.beaconPeriod = appParams.averageTbeacon - appParams.variabilityTbeacon/2 + appParams.variabilityTbeacon*rand(simValues.maxID,1);
 timeManagement.beaconPeriod(stationManagement.activeIDsLTE) = appParams.averageTbeacon;
@@ -182,12 +197,7 @@ sinrManagement.P_RX_MHz =  ( (phyParams.P_ERP_MHz_LTE(stationManagement.activeID
 timeManagement.timeNextEvent = Inf * ones(simValues.maxID,1);
 timeManagement.timeNextEvent(simValues.IDvehicle) = timeManagement.timeNextPacket(simValues.IDvehicle);
 
-%hyeonji - generationInterval
-if simParams.typeOfScenario~=2 % Not traffic trace
-    timeManagement.generationInterval = generationPeriodFromSpeed(simValues.v,appParams);
-else
-    timeManagement.generationInterval = appParams.averageTbeacon * ones(simValues.maxID,1);
-end
+
 
 %% Initialization of variables related to transmission in IEEE 802.11p
 % 'timeNextTxRx11p' stores the instant of the next backoff or

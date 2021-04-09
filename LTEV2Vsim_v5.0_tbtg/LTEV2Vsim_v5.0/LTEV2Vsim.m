@@ -188,6 +188,7 @@ if outParams.printPacketReceptionRatio
         
         outputValues.distanceDetailsCounterLTE = zeros(floor(phyParams.RawMaxLTE/outParams.prrResolution),5);
         outputValues.distanceDetailsCounterLTE(:,1) = (outParams.prrResolution:outParams.prrResolution:floor(phyParams.RawMaxLTE))';
+        %10부터 430까지 10 간격으로 세로 첫 번째 줄 채우기 - hj
     end    
 end
 

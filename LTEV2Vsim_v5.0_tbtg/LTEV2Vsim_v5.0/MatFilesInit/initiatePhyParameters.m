@@ -260,18 +260,18 @@ if simParams.technology ~= 2 % not only 11p
     
     % [NumBeaconsFrequency]
     % Specify the number of BRs in the frequency domain
-    % -1 -> default value: exploitation of all the available BRs
+    % -1 -> default value: exploitation of all the available BRs %사용 가능한 모든 BR의 활용 - hj
     [phyParams,varargin]= addNewParam(phyParams,'NumBeaconsFrequency',-1,'Specify the number of BRs in the frequency domain','integer',fileCfg,varargin{1});
     if phyParams.NumBeaconsFrequency<=0 && phyParams.NumBeaconsFrequency~=-1
         error('Error: "phyParams.NumBeaconsFrequency" must be -1 (all) or larger than 0');
-    end
+    end %왜 주파수 도메인에 있는 BR 갯수가 음수여야 하지????? - hj
     
     % [ifAdjacent]
     % Select the subchannelization scheme: adjacent or non-adjacent PSCCH and PSSCH
     [phyParams,varargin]= addNewParam(phyParams,'ifAdjacent',true,'If using adjacent PSCCH and PSSCH','bool',fileCfg,varargin{1});
     if phyParams.ifAdjacent<0
         error('Error: "phyParams.ifAdjacent" must be equal to false or true');
-    end
+    end %이게 달라지면 어떤 차이가 생길까???? - hj
     
     % [sizeSubchannel]
     % Select the subchannel size according to 3GPP TS 36.331
@@ -279,7 +279,7 @@ if simParams.technology ~= 2 % not only 11p
     [phyParams,varargin]= addNewParam(phyParams,'sizeSubchannel',-1,'Subchannel size','integer',fileCfg,varargin{1});
     if phyParams.sizeSubchannel<=0 && phyParams.sizeSubchannel~=-1
         error('Error: "phyParams.sizeSubchannel" must be -1 (best choice) or larger than 0');
-    end
+    end %얜 왜 또 음수???? - hj
 end
 
 %% Channel Model parameters

@@ -74,6 +74,7 @@ fprintf('Simulation ID = %.0f\n',outParams.simID);
 if simParams.technology==1 && strcmp(phyParams.duplexLTE,'HD') % Supported only with LTE only
     % [enableUpdateDelayHD]
     % Boolean to enable the computation of the update delay caused only by concurrent transmissions on the same subframe (LTEV2V and Half Duplex only)
+    %동일한 subframe에서 동시 전송으로만 발생하는 업데이트 지연을 계산할 수 있는 boolean (LTEV2V 및 half duplex 전용) - hj
     [outParams,varargin]= addNewParam(outParams,'enableUpdateDelayHD',false,'Enable computation of UD only caused by tx/rx on the same subframe (LTEV2V and HD only)','bool',fileCfg,varargin{1});
 else %if simParams.technology~=2 && strcmp(phyParams.duplexLTE,'FD') % if not only 11p and 'FD'
     outParams.enableUpdateDelayHD = false;
@@ -119,6 +120,7 @@ end
 % Boolean to activate the print to file of the details for distances from 0
 % up to the maximum awareness range
 [outParams,varargin]= addNewParam(outParams,'printPacketReceptionRatio',false,'Activate the print to file of detailed PRR up to the maximum awareness range','bool',fileCfg,varargin{1});
+%이건 false든 true든 1로 저장되네?? - hj
 
 if outParams.printPacketReceptionRatio
     % [prrResolution]

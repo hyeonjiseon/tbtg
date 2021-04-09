@@ -122,7 +122,14 @@
   - transmittingID가 edge effect가 일어날 수 있는 곳에 있으면 PRR이 무슨 의미가 있담?
    --> 그냥 양 사이드만 제외하는 것이니까 그렇게까지 생각할 필요 없다고 함
   - LTEV2Vsim.m 284-291 line에서 엑셀파일로 나오게 됨
- 2)기존 SPS에서 차 배치 및 속도 셋팅 후 PRR뽑기(4/5)
+ 2)기존 SPS에서 차 배치 및 속도 셋팅 후 PRR뽑기(4/5,4/8-4/9)
+  - 뭔가.. transmittingID 뺀 거랑 RC값 내리는 것, RRI 예약하는 것 간의 연결성이 부족해서 기존 SPS랑 비슷한 결과가 나오는 것 같다.
+  - outParams.enableUpdateDelayHD가 동일한 subframe에서 동시 전송으로만 발생하는 업데이트 지연을 계산할 수 있는 boolean이라는데,
+    이것도 true 시켜줘야 할까? half duplex 전용이라고 하긴 하는데..???????????????
+  - 변형/원본코드 mainInit.m timeNextPacket부분을 averageTbeacon을 generationInterval으로 바꿔줌
+    당연히 패킷 생성이 generationInterval에 따라 바뀌어야지!!
+  - 논문에서 packet buffer에 대한 내용이 있었는데 이걸 코드에 적용해 줘야 할까...??????????????
+ 
 
     
 
@@ -142,6 +149,8 @@
  4) 저번에 CBR얘기가 나왔는데 이것도 같이 보면 좋을 듯
 
 5. 한 lane 내에서도 속도를 일정하게 하지 말고, 그 일정한 속도를 평균으로 하는 전후 값들을 지정해 주어 변동을 주었을 때도 성능 향상 있는 지 확인
+ - 근데 어차피 속도가 매우 크게 변하지 않는 이상 generationInterval은 같은데 의미가 있나 싶긴 하네..
+ - interval을 바꾸는 거면 initiateApplicationParameters.m의 variabilityTbeacon을 참고해 봐도 좋을 것 같다.
 
 
 6. 논문 읽는 법
