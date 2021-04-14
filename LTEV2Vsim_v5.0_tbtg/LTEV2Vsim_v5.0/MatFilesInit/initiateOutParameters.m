@@ -51,7 +51,7 @@ if fid==-1
     simID = 0;
 else
     fclose(fid);
-    C = textread(mainFileName, '%s','delimiter', '\n');
+    C = textread(mainFileName, '%s','delimiter', '\n');    
     lastLine = C{end};
     for i=1:length(lastLine)
         if lastLine(i)=='v'

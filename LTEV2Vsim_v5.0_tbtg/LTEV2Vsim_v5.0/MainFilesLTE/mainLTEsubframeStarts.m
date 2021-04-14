@@ -28,7 +28,13 @@ timeManagement.elapsedTime_subframes = floor((timeManagement.timeNow+1e-9)/phyPa
 BRidT = ceil((stationManagement.BRid)/appParams.NbeaconsF);
 BRidT(stationManagement.BRid<=0)=-1;
 
-if mod((timeManagement.elapsedTime_subframes-1),appParams.NbeaconsT)+1 == 5
+%hyeonji - RC값 잘 떨어지나 확인하는 용
+if mod((timeManagement.elapsedTime_subframes-1),appParams.NbeaconsT)+1 == 14
+    hi = 2;
+end
+
+%hyeonji - Brid일 때 transmittingID 잘 건너뛰는 지 확인하는 용
+if mod((timeManagement.elapsedTime_subframes-1),appParams.NbeaconsT)+1 == 14
     hi = 1;
 end
 

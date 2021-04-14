@@ -41,19 +41,19 @@ for i = 1:1:length(distanceDetailsCounter(:,1))
 %     NrxNeighbors = nnz((neighborsID(indexVehicleTX,:)>0).* (neighborsDistance(indexVehicleTX,:) < distance) ...
 %         .* ((positionManagement.XvehicleReal(neighborsID(indexVehicleTX,:) > 0) > 1000) | (positionManagement.XvehicleReal(neighborsID(indexVehicleTX,:) > 0) < 2000)));
     
-    edgeError1 = 0;
-    edgeError2 = 0;
-
-    for j = 1:length(indexVehicleTX)
-        for k = 1:length(neighborsID(indexVehicleTX(j),:))
-             if (neighborsID(indexVehicleTX(j),k) > 0) && (neighborsDistance(indexVehicleTX(j),k) < distance) && ((positionManagement.XvehicleReal(neighborsID(indexVehicleTX(j),k)) < 1000)...
-                     || (positionManagement.XvehicleReal(neighborsID(indexVehicleTX(j),k)) > 2000))
-                 edgeError1 = edgeError1 + 1;
-             end
-        end
-    end
-    
-    NrxNeighbors = NrxNeighbors - edgeError1;
+%     edgeError1 = 0;
+%     edgeError2 = 0;
+% 
+%     for j = 1:length(indexVehicleTX)
+%         for k = 1:length(neighborsID(indexVehicleTX(j),:))
+%              if (neighborsID(indexVehicleTX(j),k) > 0) && (neighborsDistance(indexVehicleTX(j),k) < distance) && ((positionManagement.XvehicleReal(neighborsID(indexVehicleTX(j),k)) < 1000)...
+%                      || (positionManagement.XvehicleReal(neighborsID(indexVehicleTX(j),k)) > 2000))
+%                  edgeError1 = edgeError1 + 1;
+%              end
+%         end
+%     end
+%     
+%     NrxNeighbors = NrxNeighbors - edgeError1;
                  
     
     % #Errors within i meters
