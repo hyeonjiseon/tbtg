@@ -204,13 +204,19 @@ end
 
 % Generate time values of new vehicles entering the scenario
 timeManagement.timeNextPacket(stationManagement.activeIDs(indexNewVehicles)) = timeManagement.timeNow + appParams.averageTbeacon * rand(1,length(indexNewVehicles));
-timeManagement.beaconPeriod(stationManagement.activeIDs(indexNewVehicles)) = appParams.averageTbeacon - appParams.variabilityTbeacon/2 + appParams.variabilityTbeacon*rand(length(indexNewVehicles),1);
+
+% timeManagement.beaconPeriod(stationManagement.activeIDs(indexNewVehicles)) = appParams.averageTbeacon - appParams.variabilityTbeacon/2 + appParams.variabilityTbeacon*rand(length(indexNewVehicles),1);
 % timeManagement.beaconPeriod(stationManagement.activeIDsLTE) = appParams.averageTbeacon;
+%위 두 line은 periodic일 때 쓰이는 것이라서 주석처리함 - hj
+    
 %hyeonji - generationInterval
 timeManagement.generationInterval(stationManagement.activeIDs) = generationPeriodFromSpeed(simValues.v,appParams);
 
 % Reset time next packet and tx-rx for vehicles that exit the scenario
 timeManagement.timeNextPacket(stationManagement.activeIDsExit) = Inf;
+
+% Reset time next packet and tx-rx for vehicles that exit the scenario
+stationManagement.pckBuffer(stationManagement.activeIDsExit) = zeros(length(stationManagement.activeIDsExit),1);
 
 % Reset time next packet and tx-rx for vehicles that exit the scenario
 stationManagement.nPackets(stationManagement.activeIDsExit) = zeros(length(stationManagement.activeIDsExit),1);

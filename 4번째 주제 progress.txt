@@ -59,13 +59,14 @@
      1이면 RC를 떨어뜨리는 식으로 가면 되지 않을까.
      일딴 한쪽을 IDvehicle이 될 것이고, 다른 한 쪽은 RRP를 나타내게 될 것이다.
      이건 굳이 RRPMatrix를 쓰지 않아도 속도에 따라서 알 수 있는 값이다.    
- 4) aperiodic으로 보낼 때가 아닌데 BRid 같다고 transmitting 하는 지 확인(3/29-3/30)
+ 4) aperiodic으로 보낼 때가 아닌데 BRid 같다고 transmitting 하는 지 확인(3/29-3/30, 4/14)
   - transmittingID는 subframeStarts.m에서 정해진다. 이 때도 inTheLastSubframe에서 했던 것처럼 해 주면 될 것 같다.
   - 1ms마다 RRP를 내려줄 필요는 없다. 100ms마다 내려야 RRI라는 interval이 생긴다.
     그래서 전송이 있을 때 CountRRI 또는 RRIcount에서 하나씩 빼서 1이 되면 그제서야 할 수 있게 만들면 될 것 같다.
   - 근데 timeNextPacket이 더 먼저 있어서 2ms에 RC값을 먼저 빼고 48ms에 transmittingID가 생성되면 어떡함?? 
     전송 후에 RC값이 떨어져야 하는 거 아닌가? 그냥 100ms 안에만 이루어지면 되는 건가????????????????????
    --> lte에서도 패킷 생성될 때 떨어지는 거라서 괜찮다
+  - transmittingID를 누적해서 추가해야 하는데, 그냥 하나씩 계속 업데이트하고 있었음 PRR 이상한 문제 하나 해결
 
 3. 일정한 주행 속도를 4lane에 다르게 설정하기(3/25-3/26, 3/30, 4/1)
  1) 고속도로의 최고 속도는 편도 1차로 시속 80㎞, 편도 2차로 이상 시속 100㎞나 시속 110㎞ 등 세 가지다.
@@ -129,6 +130,10 @@
   - 변형/원본코드 mainInit.m timeNextPacket부분을 averageTbeacon을 generationInterval으로 바꿔줌
     당연히 패킷 생성이 generationInterval에 따라 바뀌어야지!!
   - 논문에서 packet buffer에 대한 내용이 있었는데 이걸 코드에 적용해 줘야 할까...??????????????
+  
+
+ - 지금 문제는 PRR의 edge effect를 제외해도 PRR이 너무 높다는 것이다!!!
+ - transmittingID
  
 
     

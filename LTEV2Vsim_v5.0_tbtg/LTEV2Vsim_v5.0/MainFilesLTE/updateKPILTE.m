@@ -80,22 +80,22 @@ for iPhyRaw=1:length(phyParams.Raw)
 end
 
 %hyeonji - 만약 transmittingID가 edge effect가 일어날 수 있는 곳에 있으면 PRR이 의미가 없음
-n=1;
-NindexVehicleTX = [];
-for i = 1:length(indexInActiveIDsOnlyLTE)
-    if (positionManagement.XvehicleReal(indexInActiveIDsOnlyLTE(i)) < 1000) || (positionManagement.XvehicleReal(indexInActiveIDsOnlyLTE(i)) > 2000)
-        continue;
-    else
-        NindexVehicleTX(n) = indexInActiveIDsOnlyLTE(i);
-        n=n+1;
-    end
-end
-
-if outParams.printPacketReceptionRatio
-    outputValues.distanceDetailsCounterLTE = countDistanceDetails(NindexVehicleTX,neighborsID_LTE,stationManagement.neighborsDistanceLTE,errorMatrixRawMax,outputValues.distanceDetailsCounterLTE,outParams,positionManagement, stationManagement);
-end
+% n=1;
+% NindexVehicleTX = [];
+% for i = 1:length(indexInActiveIDsOnlyLTE)
+%     if (positionManagement.XvehicleReal(indexInActiveIDsOnlyLTE(i)) < 1000) || (positionManagement.XvehicleReal(indexInActiveIDsOnlyLTE(i)) > 2000)
+%         continue;
+%     else
+%         NindexVehicleTX(n) = indexInActiveIDsOnlyLTE(i);
+%         n=n+1;
+%     end
+% end
+% 
+% if outParams.printPacketReceptionRatio
+%     outputValues.distanceDetailsCounterLTE = countDistanceDetails(NindexVehicleTX,neighborsID_LTE,stationManagement.neighborsDistanceLTE,errorMatrixRawMax,outputValues.distanceDetailsCounterLTE,outParams,positionManagement, stationManagement);
+% end
 
 % Count distance details for distances up to the maximum awareness range (if enabled)
-% if outParams.printPacketReceptionRatio   
-%     outputValues.distanceDetailsCounterLTE = countDistanceDetails(indexInActiveIDsOnlyLTE,neighborsID_LTE,stationManagement.neighborsDistanceLTE,errorMatrixRawMax,outputValues.distanceDetailsCounterLTE,outParams,positionManagement, stationManagement);
-% end
+if outParams.printPacketReceptionRatio   
+    outputValues.distanceDetailsCounterLTE = countDistanceDetails(indexInActiveIDsOnlyLTE,neighborsID_LTE,stationManagement.neighborsDistanceLTE,errorMatrixRawMax,outputValues.distanceDetailsCounterLTE,outParams,positionManagement, stationManagement);
+end

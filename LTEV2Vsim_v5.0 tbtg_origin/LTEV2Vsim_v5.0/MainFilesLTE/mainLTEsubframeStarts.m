@@ -32,6 +32,7 @@ BRidT(stationManagement.BRid<=0)=-1;
 %stationManagement.transmittingIDsLTE = find(BRidT == (mod((timeManagement.elapsedTime_subframes-1),appParams.NbeaconsT)+1));
 
 %hyeonji - 일단 처음에 100ms까지 한 번씩은 원래대로 전송
+firstadd = true;
 if timeManagement.elapsedTime_subframes <= 100
     stationManagement.transmittingIDsLTE = find(BRidT == (mod((timeManagement.elapsedTime_subframes-1),appParams.NbeaconsT)+1));
 else %hyeonji - 100ms 이후부터는 RRI가 길면 뛰어넘기
@@ -40,7 +41,14 @@ else %hyeonji - 100ms 이후부터는 RRI가 길면 뛰어넘기
             if stationManagement.RRIcount(i) > 1
                 stationManagement.RRIcount(i) = stationManagement.RRIcount(i) - 1;
             elseif stationManagement.RRIcount(i) == 1
-                stationManagement.transmittingIDsLTE = i;
+                %hyeonji - transmittingID 누적해서 추가
+                if firstadd == true
+                    stationManagement.transmittingIDsLTE = i;
+                    firstadd = false;
+                else
+                    txIndex = length(stationManagement.transmittingIDsLTE);
+                    stationManagement.transmittingIDsLTE(txIndex+1,1) = i;
+                end
                 stationManagement.RRIcount(i) = stationManagement.RRItx(i);
             end
         end

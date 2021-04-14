@@ -218,6 +218,7 @@ end
 % Reset time next packet and tx-rx for vehicles that exit the scenario
 timeManagement.timeNextPacket(stationManagement.activeIDsExit) = Inf;
 
+%hyeonji - 왠지 필요할 수도 있음
 % Reset time next packet and tx-rx for vehicles that exit the scenario
 stationManagement.pckBuffer(stationManagement.activeIDsExit) = zeros(length(stationManagement.activeIDsExit),1);
 

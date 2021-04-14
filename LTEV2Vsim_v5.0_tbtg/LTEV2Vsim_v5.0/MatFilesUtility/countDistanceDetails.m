@@ -56,25 +56,25 @@ for i = 1:1:length(distanceDetailsCounter(:,1))
     NrxNeighbors = NrxNeighbors - edgeError1;
                  
     
-%     % #Errors within i meters
-%     Nerrors = nnz(errorMatrix(:,4) < distance);
+    % #Errors within i meters
+    Nerrors = nnz(errorMatrix(:,4) < distance);
     
     %hyeonji - 여기서도 edge effect를 낼 수 있는 차량 제외하기
 %     Nerrors = nnz((errorMatrix(:,4) < distance) .* ((positionManagement.XvehicleReal(errorMatrix(:,2)) < 1000) | (positionManagement.XvehicleReal(errorMatrix(:,2)) > 2000)));
     
-    Nerrors = 0;
-    for m = 1: length(errorMatrix)
-        if ismember(errorMatrix(m,1),indexVehicleTX)
-            if errorMatrix(m,4) < distance
-                Nerrors = Nerrors + 1;
-            end
-            if (errorMatrix(m,4) < distance) && ((positionManagement.XvehicleReal(errorMatrix(m,2)) < 1000) || (positionManagement.XvehicleReal(errorMatrix(m,2)) > 2000))
-                edgeError2 = edgeError2 + 1;
-            end
-        end        
-    end
-    
-    Nerrors = Nerrors - edgeError2;
+%     Nerrors = 0;
+%     for m = 1: length(errorMatrix)
+%         if ismember(errorMatrix(m,1),indexVehicleTX)
+%             if errorMatrix(m,4) < distance
+%                 Nerrors = Nerrors + 1;
+%             end
+%             if (errorMatrix(m,4) < distance) && ((positionManagement.XvehicleReal(errorMatrix(m,2)) < 1000) || (positionManagement.XvehicleReal(errorMatrix(m,2)) > 2000))
+%                 edgeError2 = edgeError2 + 1;
+%             end
+%         end        
+%     end
+%     
+%     Nerrors = Nerrors - edgeError2;
     
     distanceDetailsCounter(i,3) = distanceDetailsCounter(i,3) + Nerrors;
     

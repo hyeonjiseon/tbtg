@@ -107,8 +107,10 @@ timeManagement.timeNextPacket = Inf * ones(simValues.maxID,1);
 timeManagement.timeNextPacket(simValues.IDvehicle) = timeManagement.generationInterval(stationManagement.activeIDs) .* rand(length(stationManagement.activeIDs),1);
 
 timeManagement.timeLastPacket = -1 * ones(simValues.maxID,1); % needed for the calculation of the CBR
-timeManagement.beaconPeriod = appParams.averageTbeacon - appParams.variabilityTbeacon/2 + appParams.variabilityTbeacon*rand(simValues.maxID,1);
-timeManagement.beaconPeriod(stationManagement.activeIDsLTE) = appParams.averageTbeacon;
+
+% timeManagement.beaconPeriod = appParams.averageTbeacon - appParams.variabilityTbeacon/2 + appParams.variabilityTbeacon*rand(simValues.maxID,1);
+% timeManagement.beaconPeriod(stationManagement.activeIDsLTE) = appParams.averageTbeacon;
+%위 두 line은 5.4v에서 aperiodic을 안 하는 LTE에서 쓰라고 만들었던 것임 - hj
 
 %% Initialize propagation
 % Tx power vectors

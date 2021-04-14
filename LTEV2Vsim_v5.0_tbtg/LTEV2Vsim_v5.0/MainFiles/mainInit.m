@@ -158,7 +158,7 @@ simValues.YvehicleEstimated = positionManagement.YvehicleReal;
 
 % Save positionManagement.distance matrix
 positionManagement.XvehicleRealOld = positionManagement.XvehicleReal;
-positionManagement.YvehicleRealOld =  positionManagement.YvehicleReal;
+positionManagement.YvehicleRealOld = positionManagement.YvehicleReal;
 positionManagement.distanceRealOld = positionManagement.distanceReal;
 positionManagement.angleOld = zeros(length(positionManagement.XvehicleRealOld),1);
 
@@ -174,7 +174,6 @@ if simParams.typeOfScenario==2 && outParams.printPRRmap % Only traffic traces
     simValues.XmapFloor = floor(simValues.Xmap);
     simValues.YmapFloor = floor(simValues.Ymap);
 end
-
 
 % Computation of the channel gain
 % 'dUpdate': vector used for the calculation of correlated shadowing
@@ -319,8 +318,8 @@ if simParams.technology ~= 2 % not only 11p
         %hyeonji - RC값 건너뛰기 위함
         stationManagement.RRItx = int8(timeManagement.generationInterval*10);
         stationManagement.CountRRI = stationManagement.RRItx;
-%         %hyeonji - transmittingID 건너뛰기 위함
-%         stationManagement.RRIcount = stationManagement.RRItx;
+        %hyeonji - transmittingID 건너뛰기 위함
+        stationManagement.RRIcount = stationManagement.RRItx;
         
         % Find min and max values for random counter (BRAlgorithm=18)
         [simParams.minRandValueMode4,simParams.maxRandValueMode4] = findRandValueMode4(appParams.averageTbeacon,simParams);
@@ -335,7 +334,7 @@ if simParams.technology ~= 2 % not only 11p
         stationManagement.sensingMatrixLTE = zeros(ceil(simParams.TsensingPeriod/appParams.averageTbeacon),appParams.Nbeacons,simValues.maxID);%sim5.4v에서도 같음 - hj
 %         stationManagement.knownUsedMatrixLTE = zeros(appParams.Nbeacons,simValues.maxID);
 
-        %hyeonji
+        %hyeonji - RRI 크기 조절해 주기 위함
         stationManagement.ReserveRRPMatrix = zeros(appParams.NbeaconsT*appParams.NbeaconsF,10,simValues.maxID);
         stationManagement.knownRRPMatrix = zeros(appParams.NbeaconsT*appParams.NbeaconsF,10,simValues.maxID-1);
         
